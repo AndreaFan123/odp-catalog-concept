@@ -1,0 +1,190 @@
+/**
+ * Design Tokens — ODP Catalog Concept
+ * Source of truth: design/a11y-color-audit.md
+ *
+ * Three-layer architecture
+ * ─────────────────────────────────────────────────────────────────
+ * Layer 1  PRIMITIVE   Raw hex values. Named by hue + scale step.
+ *                      Never referenced directly in components.
+ * Layer 2  SEMANTIC    Purpose-driven aliases of primitives.
+ *                      Components always reference this layer.
+ * Layer 3  COMPONENT   Per-component overrides where semantic
+ *                      tokens alone are insufficient.
+ * ─────────────────────────────────────────────────────────────────
+ *
+ * Accessibility contract (WCAG 2.1 AA)
+ * Every semantic pairing is documented with its contrast ratio.
+ * Do not change a value without re-auditing the affected pairings.
+ * Ratios verified in design/a11y-color-audit.md.
+ *
+ * Tailwind v4 usage
+ * This file is imported by globals.css. Semantic tokens are mapped
+ * to Tailwind utilities via the @theme block in globals.css.
+ */
+
+
+/* ═══════════════════════════════════════════════════════════════
+   LAYER 1 — PRIMITIVES
+   ═══════════════════════════════════════════════════════════════ */
+
+:root {
+  /* Purple scale */
+  --primitive-purple-950: #200a3a;  /* bg-base */
+  --primitive-purple-800: #382066;  /* bg-surface */
+  --primitive-purple-600: #6918f1;  /* ⚠ RESTRICTED — dark-bg use prohibited (2.57:1 max) */
+  --primitive-purple-400: #b582f7;  /* Adjusted violet: 6.01:1 on purple-950, 4.47:1 on purple-800 */
+  --primitive-purple-200: #d4b3fa;  /* 8.92:1 on purple-950 — display text only */
+
+  /* Cyan scale */
+  --primitive-cyan-400:   #02ffd1;  /* 13.92:1 on purple-950, 10.36:1 on purple-800 */
+  --primitive-cyan-500:   #00e8bc;  /* Hover variant (~8% darker) */
+
+  /* Neutral scale */
+  --primitive-white:      #ffffff;  /* 18.10:1 on purple-950, 13.48:1 on purple-800 */
+  --primitive-gray-50:    #f5f5f5;  /* 16.52:1 on purple-950, 12.30:1 on purple-800 */
+  --primitive-gray-200:   #d8d3d3;  /* Unaudited — do not use until A11Y-03 resolved */
+  --primitive-gray-300:   #bbbbbb;  /* 9.38:1 on purple-950, 6.98:1 on purple-800 */
+  --primitive-black:      #000000;
+
+  /* Feedback scale (all verified against dark backgrounds) */
+  --primitive-green-400:  #34d399;  /* 9.37:1 on purple-950, 6.97:1 on purple-800 */
+  --primitive-amber-400:  #fbbf24;  /* #200a3a on this bg = 10.79:1 (label text) */
+  --primitive-red-400:    #f87171;  /* #200a3a on this bg = 6.51:1 (label text) */
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   LAYER 2 — SEMANTIC TOKENS
+   ═══════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── Surfaces ── */
+  --color-bg-base:      var(--primitive-purple-950);  /* Page background */
+  --color-bg-surface:   var(--primitive-purple-800);  /* Cards, nav, sidebar */
+  --color-bg-overlay:   var(--primitive-white);       /* Modals, tooltips (light) */
+  --color-bg-inverse:   var(--primitive-gray-50);     /* Light-mode fallback */
+
+  /* ── Text ──
+     Validated on both --color-bg-base and --color-bg-surface.
+     See audit §6 for full pairing table.                        */
+  --color-text-primary:    var(--primitive-white);     /* 18.10:1 / 13.48:1 — headings */
+  --color-text-body:       var(--primitive-gray-50);   /* 16.52:1 / 12.30:1 — body copy */
+  --color-text-secondary:  var(--primitive-gray-300);  /* 9.38:1  /  6.98:1 — metadata, captions */
+  --color-text-accent:     var(--primitive-cyan-400);  /* 13.92:1 / 10.36:1 — data highlights */
+  --color-text-brand:      var(--primitive-purple-400); /* 6.01:1  /  4.47:1 — brand labels on dark */
+
+  /* Text on light surfaces */
+  --color-text-on-light:        var(--primitive-purple-950); /* 16.52:1 on gray-50 */
+  --color-text-on-light-accent: var(--primitive-purple-600); /* 5.17:1 on white — AA ✅ */
+  --color-text-on-cyan:         var(--primitive-purple-950); /* 13.92:1 on cyan-400 */
+
+  /* ── Borders ── */
+  --color-border-default:  var(--primitive-purple-400); /* 6.01:1 on bg-base — AA ✅ */
+  --color-border-subtle:   var(--primitive-gray-300);   /* 9.38:1 on bg-base */
+  --color-border-accent:   var(--primitive-cyan-400);   /* 13.92:1 on bg-base */
+  --color-border-on-light: var(--primitive-purple-800); /* Dividers on light surfaces */
+
+  /* ── Interactive ── */
+  --color-action-primary-bg:      var(--primitive-cyan-400);   /* CTA fill */
+  --color-action-primary-text:    var(--primitive-purple-950); /* 13.92:1 on cyan — AA ✅ */
+  --color-action-primary-hover:   var(--primitive-cyan-500);   /* Darkened cyan for hover */
+
+  --color-action-secondary-bg:     transparent;
+  --color-action-secondary-text:   var(--primitive-cyan-400);
+  --color-action-secondary-border: var(--primitive-cyan-400);
+
+  --color-action-ghost-text:    var(--primitive-gray-50);
+  --color-action-ghost-hover:   var(--primitive-purple-800);
+
+  /* ── Focus ──
+     Cyan achieves 13.92:1 on bg-base — safe as a temporary value.
+     A11Y-01 tracks adjacent-element audit (button fill, card border). */
+  --color-focus-ring: var(--primitive-cyan-400);
+
+  /* ── Feedback ── (A11Y-02 resolved 2026-04-02)
+     Tokens verified against both dark surfaces.
+     For badge pattern: dark text (#200a3a) on colored bg.
+     For inline text pattern: colored text on dark bg.            */
+  --color-feedback-success-text: var(--primitive-green-400);  /* 9.37:1 on bg-base — AA ✅ */
+  --color-feedback-success-bg:   var(--primitive-green-400);  /* bg; pair with --color-text-on-feedback */
+  --color-feedback-warning-text: var(--primitive-amber-400);  /* 10.79:1 as bg label — AA ✅ */
+  --color-feedback-warning-bg:   var(--primitive-amber-400);
+  --color-feedback-error-text:   var(--primitive-red-400);    /* 6.51:1 as bg label — AA ✅ */
+  --color-feedback-error-bg:     var(--primitive-red-400);
+  --color-feedback-info-text:    var(--primitive-cyan-400);   /* 13.92:1 on bg-base — AA ✅ */
+  --color-feedback-info-bg:      var(--primitive-cyan-400);
+  --color-text-on-feedback:      var(--primitive-purple-950); /* Dark label on all feedback bgs */
+
+  /* ── Tags / Badges ── */
+  --color-tag-bg:     var(--primitive-purple-800);
+  --color-tag-text:   var(--primitive-gray-50);    /* 12.30:1 on purple-800 — AA ✅ */
+  --color-tag-border: var(--primitive-purple-400); /* 4.47:1 on purple-800  — AA ✅ */
+
+  /* ── Skeleton / loading ── */
+  --color-skeleton-base:     var(--primitive-purple-800);
+  --color-skeleton-shimmer:  var(--primitive-purple-950);
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   LAYER 3 — COMPONENT TOKENS
+   Override semantic tokens only for justified visual exceptions.
+   ═══════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── Dataset card ── */
+  --card-bg:            var(--color-bg-surface);
+  --card-border:        var(--color-border-default);
+  --card-border-hover:  var(--color-border-accent);
+  --card-title:         var(--color-text-primary);
+  --card-body:          var(--color-text-body);
+  --card-meta:          var(--color-text-secondary);
+  --card-tag-bg:        var(--color-tag-bg);
+  --card-tag-text:      var(--color-tag-text);
+  --card-tag-border:    var(--color-tag-border);
+
+  /* ── Feedback badge (pill on card) ── */
+  --badge-success-bg:   var(--color-feedback-success-bg);
+  --badge-success-text: var(--color-text-on-feedback);   /* 9.37:1 on green-400 */
+  --badge-warning-bg:   var(--color-feedback-warning-bg);
+  --badge-warning-text: var(--color-text-on-feedback);   /* 10.79:1 on amber-400 */
+  --badge-error-bg:     var(--color-feedback-error-bg);
+  --badge-error-text:   var(--color-text-on-feedback);   /* 6.51:1 on red-400 */
+  --badge-info-bg:      var(--color-feedback-info-bg);
+  --badge-info-text:    var(--color-text-on-feedback);   /* 13.92:1 on cyan-400 */
+
+  /* ── Navigation ── */
+  --nav-bg:              var(--color-bg-surface);
+  --nav-text:            var(--color-text-body);
+  --nav-text-active:     var(--color-text-accent);
+  --nav-border-active:   var(--color-border-accent);
+  --nav-item-hover-bg:   var(--color-bg-base);
+
+  /* ── Search bar ── */
+  --search-bg:           var(--color-bg-base);
+  --search-border:       var(--color-border-default);
+  --search-border-focus: var(--color-focus-ring);
+  --search-text:         var(--color-text-body);
+  --search-placeholder:  var(--color-text-secondary);
+
+  /* ── Map preview panel ── */
+  --map-bg:              var(--color-bg-base);
+  --map-border:          var(--color-border-subtle);
+  --map-label:           var(--color-text-body);
+
+  /* ── Buttons ── */
+  --btn-primary-bg:      var(--color-action-primary-bg);
+  --btn-primary-text:    var(--color-action-primary-text);
+  --btn-primary-hover:   var(--color-action-primary-hover);
+
+  --btn-secondary-text:   var(--color-action-secondary-text);
+  --btn-secondary-border: var(--color-action-secondary-border);
+  --btn-secondary-bg:     var(--color-action-secondary-bg);
+
+  --btn-ghost-text:       var(--color-action-ghost-text);
+  --btn-ghost-hover-bg:   var(--color-action-ghost-hover);
+
+  /* ── Skeleton loader ── */
+  --skeleton-base:       var(--color-skeleton-base);
+  --skeleton-shimmer:    var(--color-skeleton-shimmer);
+}

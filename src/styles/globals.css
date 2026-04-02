@@ -1,0 +1,164 @@
+@import "tailwindcss";
+@import "./tokens.css";
+
+/**
+ * globals.css — ODP Catalog Concept
+ *
+ * Responsibilities:
+ *  1. @theme  — map semantic tokens to Tailwind v4 utilities
+ *  2. base    — global element defaults (body, selection, scrollbar)
+ *  3. focus   — :focus-visible ring using --color-focus-ring
+ *  4. motion  — prefers-reduced-motion overrides
+ *
+ * Rule: never hardcode a color value here. Always reference a token.
+ */
+
+
+/* ─────────────────────────────────────────────────────────────────
+   @theme — Tailwind v4 design token bridge
+   Maps CSS custom properties to Tailwind utility classes.
+   Usage: bg-surface, text-body, border-accent, etc.
+   ───────────────────────────────────────────────────────────────── */
+
+@theme {
+  /* Surfaces */
+  --color-bg-base:     var(--color-bg-base);
+  --color-bg-surface:  var(--color-bg-surface);
+  --color-bg-overlay:  var(--color-bg-overlay);
+  --color-bg-inverse:  var(--color-bg-inverse);
+
+  /* Text */
+  --color-text-primary:    var(--color-text-primary);
+  --color-text-body:       var(--color-text-body);
+  --color-text-secondary:  var(--color-text-secondary);
+  --color-text-accent:     var(--color-text-accent);
+  --color-text-brand:      var(--color-text-brand);
+  --color-text-on-light:   var(--color-text-on-light);
+  --color-text-on-cyan:    var(--color-text-on-cyan);
+
+  /* Borders */
+  --color-border-default:  var(--color-border-default);
+  --color-border-subtle:   var(--color-border-subtle);
+  --color-border-accent:   var(--color-border-accent);
+
+  /* Interactive */
+  --color-action-primary-bg:    var(--color-action-primary-bg);
+  --color-action-primary-text:  var(--color-action-primary-text);
+  --color-action-primary-hover: var(--color-action-primary-hover);
+
+  /* Feedback */
+  --color-feedback-success-text: var(--color-feedback-success-text);
+  --color-feedback-success-bg:   var(--color-feedback-success-bg);
+  --color-feedback-warning-text: var(--color-feedback-warning-text);
+  --color-feedback-warning-bg:   var(--color-feedback-warning-bg);
+  --color-feedback-error-text:   var(--color-feedback-error-text);
+  --color-feedback-error-bg:     var(--color-feedback-error-bg);
+  --color-feedback-info-text:    var(--color-feedback-info-text);
+  --color-feedback-info-bg:      var(--color-feedback-info-bg);
+  --color-text-on-feedback:      var(--color-text-on-feedback);
+
+  /* Focus */
+  --color-focus-ring: var(--color-focus-ring);
+}
+
+
+/* ─────────────────────────────────────────────────────────────────
+   Base — global element defaults
+   ───────────────────────────────────────────────────────────────── */
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    /* Prevent font inflation on mobile */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-bg-base);
+    color: var(--color-text-body);
+    /* System font stack — no custom font loading until typeface is decided */
+    font-family:
+      ui-sans-serif,
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      sans-serif;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Text selection */
+  ::selection {
+    background-color: var(--primitive-cyan-400);
+    color: var(--color-text-on-cyan);
+  }
+
+  /* Scrollbar — subtle, matches surface color */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--color-bg-base);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-border-default);
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-border-accent);
+  }
+}
+
+
+/* ─────────────────────────────────────────────────────────────────
+   Focus — :focus-visible ring
+   Applies to all interactive elements. Uses keyboard-only focus
+   (:focus-visible) to avoid ring on mouse click.
+   Ring is 2px solid + 2px offset for clear contrast against both
+   dark surfaces and cyan button fills.
+   A11Y-01: adjacent-element audit pending — cyan is safe for now.
+   ───────────────────────────────────────────────────────────────── */
+
+@layer base {
+  :focus-visible {
+    outline: 2px solid var(--color-focus-ring);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  /* Remove default outline — we handle it above */
+  :focus:not(:focus-visible) {
+    outline: none;
+  }
+}
+
+
+/* ─────────────────────────────────────────────────────────────────
+   Motion — prefers-reduced-motion
+   Disables transitions and animations for users who prefer less
+   motion (vestibular disorders, epilepsy, personal preference).
+   Skeleton shimmer and map transitions are the main targets.
+   ───────────────────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
