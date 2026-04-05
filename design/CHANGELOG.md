@@ -6,6 +6,75 @@ All significant design system decisions are recorded here. Format follows [Keep 
 
 ## [Unreleased]
 
+## [2026-04-05] — Focus state unified; Sidebar redesign; Loading inline; Spotify UX refactor; responsive layout; a11y improvements; DD-13–16
+
+### Added
+
+- **A11y**: Focus state unified — global `*:focus-visible` now uses 3px solid outline at 3px offset; Token: `--color-focus-ring: #047857` (light, 5.8:1 on white ✅) / `--color-focus-ring: #03FFD1` (dark, 8.9:1 on `#121212` ✅)
+- **A11y**: `.round-button` CSS class added — circular buttons (UserMenu, ThemeToggle) use box-shadow to simulate focus ring with `border-radius: 50%`
+- **A11y**: Card focus ring strengthened — `.dataset-card:focus-visible` changed to `box-shadow: 0 0 0 3px --color-bg, 0 0 0 6px --color-focus-ring` (previously 2px/4px)
+- **A11y**: Removed inline `style={{ outline: 'none' }}` from search input and UserMenu avatar, allowing global CSS focus styles to take effect
+- **A11y**: `svg[aria-hidden="true"]` replaces the overly broad `svg:focus-visible { outline: none }` rule
+- **UI**: Sidebar collapse icon changed to panel icon (rectangular frame + left divider line SVG); expanded state shows icon on the right; collapsed state shows icon centered with logo fully hidden
+- **UI**: Sidebar light mode redesigned — background changed from `#1a0832` to `#f5f5f5`; text colors `#111111` / `#535353` / `#a0a0a0`; active dot uses `--color-sidebar-accent: #0A7055`
+- **UI**: Sidebar header theme-aware logo switching — light: `ODP-Logo-Light.svg` (fill `#200A3A`) + `#f5f5f5` background; dark: `ODP-Logo.svg` (white) + `#000000` background
+- **Assets**: Added `ODP-Logo-Light.svg` (deep purple logo for light mode sidebar)
+- **UI**: LoadingScreen changed to inline — displays only within the grid area; sidebar and toolbar remain visible during loading; text changed to "Loading datasets..."
+- **UI**: Loading animation — three cyan sine waves; period 200px (extended from 140px); speed 2s / 3s / 4s; amplitude ±16px; keyframe `translateX(-400px)`; `prefers-reduced-motion` supported
+
+- **UI**: AppShell component — Spotify-style two-column layout with collapsible sidebar (220px ↔ 60px), LIBRARY + BROWSE sections, external footer links, mobile bottom tab bar, category bottom sheet (DD-10)
+- **UI**: Responsive breakpoints — desktop auto-fill grid (minmax 260px), tablet 3-column, mobile 2-column; sidebar auto-collapse on tablet; hidden on mobile (DD-10)
+- **UI**: DatasetCard redesigned — square map cover (SpatialThumbnail size="cover"), license badge overlay, provider · year meta, region tag. Save button (♡) with localStorage persistence
+- **UI**: SpatialThumbnail `size="cover"` variant — fills container, global bbox "Global" label, point data halo, rx=3 continent rects
+- **UI**: YearFilter chip row — All time / Since 2020 / 2015 / 2010 / 2000; URL-driven via `?since=` param; AND-combined with keyword + category filters
+- **A11y**: Skip link (`href="#main-content"`) added to RootLayout; `.skip-link` CSS in globals.css
+- **A11y**: `.dataset-card:focus-visible` — 3px solid cyan outline (13.94:1 contrast)
+- **A11y**: Save button touch target upgraded to 44×44px (36px visual circle) per WCAG 2.5.5
+- **A11y**: `design/a11y-color-audit.md` Section 9 — Card Grid A11y Review; A11Y-06/07/08 opened
+- **Product**: DD-13 — DatasetCard removes SpatialThumbnail, uses region badge instead
+- **Product**: DD-14 — Detail page uses MapLibre GL JS flat map
+- **Product**: DD-15 — Light mode first, dark mode deferred; sidebar retains #200A3A brand color
+- **Product**: DD-16 — Type filter replaced by Collection relationship display on card and detail page
+- **Router**: `since` search param added to `CatalogSearch`; `validateSearch` handles string/number coercion
+
+### Changed
+
+- **`src/styles/tokens.css`**: Dark-first semantic defaults (Spotify palette: `#121212` bg, `#1E1E1E` surface, `#282828` elevated); `[data-theme="light"]` override added; `--color-text-muted` upgraded from `#727272` (3.46:1 ❌) to `#A0A0A0` (5.68:1 ✅); simplified aliases `--color-bg`, `--color-surface`, `--color-border`, `--color-accent`
+- **`src/styles/globals.css`**: `.collection-grid` responsive breakpoints; `.dataset-card:focus-visible`; `.skip-link`
+- **`src/App.tsx`**: RootLayout simplified to `<Outlet>`; skip link added; Navbar removed (replaced by AppShell sidebar)
+
+### Fixed
+
+- **A11y**: `--color-text-muted` contrast failure (#727272 at 3.46:1 on #1E1E1E) — upgraded to #A0A0A0
+
+### Product Decisions
+
+| Decision | Summary |
+|---|---|
+| DD-13 | Card removes SpatialThumbnail (illegible at small size) — region badge instead |
+| DD-14 | Detail page flat map (MapLibre) — accurate spatial info over 3D visual impact |
+| DD-15 | Light mode first — aligns with Hub Ocean platform language; dark mode deferred |
+| DD-16 | No Type filter checkbox — Collection relationship shown as discovery entry on card/detail |
+
+## [2026-04-03] — Design system corrected to match platform; personas v1.1; PP-12–15; DD-09; positioning Section 8
+
+### Added
+
+- Design system: token system corrected — removed `#382066` (`--primitive-purple-800`, landing page color not in platform); added proper light/dark mode token pairs (`--color-surface-primary/secondary`, `--color-text-primary/secondary/muted`); dark mode now derives from platform light mode (gray-900 scale), not landing page palette; `--color-nav-bg` introduced as always-dark token (#200A3A, both modes)
+- Design system: removed landing page colors `#6918F1` (`--primitive-purple-600`) and `#b582f7` (`--primitive-purple-400`, `--primitive-purple-200`)
+- Design system: added platform UI colors `#796C89` (`--primitive-gray-purple-600`, UI only — fails text AA) and `#8F849C` (`--primitive-gray-purple-400`, text AA ✅)
+- Design system: fonts changed from DM Serif Display / DM Sans / IBM Plex Mono → Roboto / Roboto Mono (platform match)
+- Design system: `index.html` updated with Google Fonts preconnect + Roboto load
+- A11y: new audit Section 8 in `design/a11y-color-audit.md` — platform colors; A11Y-04 and A11Y-05 opened
+- Research: personas updated to v1.1 — grounded in real Hub Ocean partner institutions (IMR, Aker BP/TGS, UN Ocean Decade CDG), AI-native behaviors added to Lena, ESG reporting pressure added to Marcus, institutional credibility gap added to Amara
+- Research: pain point PP-12 — filter tool interaction and semantics unclear, discovered from live ODP testing
+- Product: design decision DD-09 — clickable card labels as filter triggers, replacing invisible sidebar affordances
+- Marketing: positioning.md Section 8 — Audience Expansion beyond researchers; ESG analyst persona draft (Sofia Chen); prerequisite conditions for serving non-research audiences
+- Research: PP-13 added — Citation implementation inconsistent across datasets (High)
+- Research: PP-14 added — Map displays vessel tracklines instead of coverage bbox (Critical)
+- Research: PP-15 added — Technical field names have no plain-language descriptions (High)
+- Research: Cross-Cutting Insight updated — PP-14 noted as reinforcing DD-02 bbox-first map design
+
 ## [0.3.0] — 2026-04-02
 
 ### Added

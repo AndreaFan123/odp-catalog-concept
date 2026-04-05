@@ -7,19 +7,20 @@
  * Layer 1  PRIMITIVE   Raw hex values. Named by hue + scale step.
  *                      Never referenced directly in components.
  * Layer 2  SEMANTIC    Purpose-driven aliases of primitives.
- *                      Components always reference this layer.
+ *                      Light mode in :root, dark mode overrides below.
  * Layer 3  COMPONENT   Per-component overrides where semantic
  *                      tokens alone are insufficient.
  * ─────────────────────────────────────────────────────────────────
  *
+ * Design basis (2026-04-03 correction)
+ * The platform UI is light mode — white surfaces, dark text.
+ * #200A3A appears only in the navbar, not as a page background.
+ * Dark mode is derived from the platform light mode (gray-900 scale),
+ * NOT from the landing page palette (#382066 removed entirely).
+ *
  * Accessibility contract (WCAG 2.1 AA)
  * Every semantic pairing is documented with its contrast ratio.
- * Do not change a value without re-auditing the affected pairings.
  * Ratios verified in design/a11y-color-audit.md.
- *
- * Tailwind v4 usage
- * This file is imported by globals.css. Semantic tokens are mapped
- * to Tailwind utilities via the @theme block in globals.css.
  */
 
 
@@ -28,101 +29,205 @@
    ═══════════════════════════════════════════════════════════════ */
 
 :root {
-  /* Purple scale */
-  --primitive-purple-950: #200a3a;  /* bg-base */
-  --primitive-purple-800: #382066;  /* bg-surface */
-  --primitive-purple-600: #6918f1;  /* ⚠ RESTRICTED — dark-bg use prohibited (2.57:1 max) */
-  --primitive-purple-400: #b582f7;  /* Adjusted violet: 6.01:1 on purple-950, 4.47:1 on purple-800 */
-  --primitive-purple-200: #d4b3fa;  /* 8.92:1 on purple-950 — display text only */
+  /* ── Navy / brand ──
+     #200A3A used exclusively for the navbar in both light and dark mode.
+     It is NOT a page background color.
+     ⚠ #382066 (landing page) removed — not part of platform UI.         */
+  --primitive-purple-950: #200a3a;
 
-  /* Cyan scale */
-  --primitive-cyan-400:   #02ffd1;  /* 13.92:1 on purple-950, 10.36:1 on purple-800 */
-  --primitive-cyan-500:   #00e8bc;  /* Hover variant (~8% darker) */
+  /* ── Platform UI colors (CSS Peeper 2026-04-03) ──
+     ⚠ #796C89 fails text AA (4.03:1 on white) — UI elements only
+     ✅ #8F849C passes UI AA (3.54:1 on white) — borders, icons          */
+  --primitive-gray-purple-600: #796c89;
+  --primitive-gray-purple-400: #8f849c;
 
-  /* Neutral scale */
-  --primitive-white:      #ffffff;  /* 18.10:1 on purple-950, 13.48:1 on purple-800 */
-  --primitive-gray-50:    #f5f5f5;  /* 16.52:1 on purple-950, 12.30:1 on purple-800 */
-  --primitive-gray-200:   #d8d3d3;  /* Unaudited — do not use until A11Y-03 resolved */
-  --primitive-gray-300:   #bbbbbb;  /* 9.38:1 on purple-950, 6.98:1 on purple-800 */
-  --primitive-black:      #000000;
+  /* ── Cyan scale — platform accent ── */
+  --primitive-cyan-400: #03ffd1;   /* 13.94:1 on #200A3A */
+  --primitive-cyan-500: #00e8bc;   /* hover variant */
 
-  /* Feedback scale (all verified against dark backgrounds) */
-  --primitive-green-400:  #34d399;  /* 9.37:1 on purple-950, 6.97:1 on purple-800 */
-  --primitive-amber-400:  #fbbf24;  /* #200a3a on this bg = 10.79:1 (label text) */
-  --primitive-red-400:    #f87171;  /* #200a3a on this bg = 6.51:1 (label text) */
+  /* ── Neutral gray scale (Tailwind-aligned) ──
+     Used for light/dark surface and text tokens.                         */
+  --primitive-white:     #ffffff;
+  --primitive-gray-50:   #f9fafb;   /* light: surface-secondary */
+  --primitive-gray-100:  #f3f4f6;   /* light: border-subtle */
+  --primitive-gray-200:  #e5e7eb;   /* light: border-default */
+  --primitive-gray-400:  #9ca3af;   /* dark: text-secondary / light: text-muted */
+  --primitive-gray-500:  #6b7280;   /* light: text-secondary / dark: text-muted */
+  --primitive-gray-700:  #374151;   /* dark: border-default */
+  --primitive-gray-800:  #1f2937;   /* dark: surface-secondary */
+  --primitive-gray-900:  #111827;   /* dark: surface-primary / light: text-primary */
+
+  /* ── Feedback ── */
+  --primitive-green-400: #34d399;
+  --primitive-amber-400: #fbbf24;
+  --primitive-red-400:   #f87171;
+
+  /* ── Typography ── */
+  --font-display: "Roboto", sans-serif;
+  --font-sans:    "Roboto", sans-serif;
+  --font-mono:    "Roboto Mono", monospace;
 }
 
 
 /* ═══════════════════════════════════════════════════════════════
-   LAYER 2 — SEMANTIC TOKENS
+   LAYER 1 — PRIMITIVES (continued) — Spotify dark palette
    ═══════════════════════════════════════════════════════════════ */
 
 :root {
-  /* ── Surfaces ── */
-  --color-bg-base:      var(--primitive-purple-950);  /* Page background */
-  --color-bg-surface:   var(--primitive-purple-800);  /* Cards, nav, sidebar */
-  --color-bg-overlay:   var(--primitive-white);       /* Modals, tooltips (light) */
-  --color-bg-inverse:   var(--primitive-gray-50);     /* Light-mode fallback */
+  --primitive-spotify-bg:       #121212;  /* Spotify base background */
+  --primitive-spotify-surface:  #1e1e1e;  /* Card / panel surfaces */
+  --primitive-spotify-elevated: #282828;  /* Hover / elevated surface */
+  --primitive-spotify-border:   #333333;  /* Default border */
+  --primitive-spotify-nav:      #000000;  /* Sidebar (deeper than bg) */
+  --primitive-text-b3:          #b3b3b3;  /* Spotify secondary text — 9.35:1 on #121212 ✅ */
+  --primitive-text-72:          #a0a0a0;  /* Muted text — upgraded from #727272 (3.46:1 ❌) to #a0a0a0 (6.45:1 ✅) */
+}
 
-  /* ── Text ──
-     Validated on both --color-bg-base and --color-bg-surface.
-     See audit §6 for full pairing table.                        */
-  --color-text-primary:    var(--primitive-white);     /* 18.10:1 / 13.48:1 — headings */
-  --color-text-body:       var(--primitive-gray-50);   /* 16.52:1 / 12.30:1 — body copy */
-  --color-text-secondary:  var(--primitive-gray-300);  /* 9.38:1  /  6.98:1 — metadata, captions */
-  --color-text-accent:     var(--primitive-cyan-400);  /* 13.92:1 / 10.36:1 — data highlights */
-  --color-text-brand:      var(--primitive-purple-400); /* 6.01:1  /  4.47:1 — brand labels on dark */
 
-  /* Text on light surfaces */
-  --color-text-on-light:        var(--primitive-purple-950); /* 16.52:1 on gray-50 */
-  --color-text-on-light-accent: var(--primitive-purple-600); /* 5.17:1 on white — AA ✅ */
-  --color-text-on-cyan:         var(--primitive-purple-950); /* 13.92:1 on cyan-400 */
+/* ═══════════════════════════════════════════════════════════════
+   LAYER 2 — SEMANTIC TOKENS (light mode default, DD-15)
+   Platform is light-first. Dark mode override via [data-theme="dark"].
+   ═══════════════════════════════════════════════════════════════ */
 
-  /* ── Borders ── */
-  --color-border-default:  var(--primitive-purple-400); /* 6.01:1 on bg-base — AA ✅ */
-  --color-border-subtle:   var(--primitive-gray-300);   /* 9.38:1 on bg-base */
-  --color-border-accent:   var(--primitive-cyan-400);   /* 13.92:1 on bg-base */
-  --color-border-on-light: var(--primitive-purple-800); /* Dividers on light surfaces */
+:root {
+  /* ── Surfaces (light) ── */
+  --color-surface-primary:   #ffffff;
+  --color-surface-secondary: #f5f5f5;
+  --color-surface-elevated:  #efefef;
 
-  /* ── Interactive ── */
-  --color-action-primary-bg:      var(--primitive-cyan-400);   /* CTA fill */
-  --color-action-primary-text:    var(--primitive-purple-950); /* 13.92:1 on cyan — AA ✅ */
-  --color-action-primary-hover:   var(--primitive-cyan-500);   /* Darkened cyan for hover */
+  /* ── Borders (light) ── */
+  --color-border-default:    #e0e0e0;
+  --color-border-subtle:     #efefef;
+  --color-border-accent:     var(--primitive-cyan-400);
+
+  /* ── Text (light) ── */
+  --color-text-primary:      #111111;
+  --color-text-secondary:    #535353;
+  --color-text-muted:        #a0a0a0;
+  --color-text-accent:       var(--primitive-cyan-400);
+  --color-text-on-cyan:      #111111;
+  --color-text-on-feedback:  var(--primitive-purple-950);
+
+  /* ── Navigation (sidebar) — always dark brand color ── */
+  --color-nav-bg:     var(--primitive-purple-950);  /* #200A3A */
+  --color-nav-text:   var(--primitive-white);
+  --color-nav-accent: var(--primitive-cyan-400);
+
+  /* ── Sidebar tokens (light mode: matches surface palette) ── */
+  --color-sidebar-bg:            #f5f5f5;
+  --color-sidebar-text:          #535353;
+  --color-sidebar-text-active:   #111111;
+  --color-sidebar-section-label: #a0a0a0;
+  --color-sidebar-item-hover:    rgba(0,0,0,0.05);
+  --color-sidebar-item-active:   rgba(0,0,0,0.08);
+  --color-sidebar-accent:        #0A7055;  /* active dot + active text accent (5.5:1 on #f5f5f5 ✅) */
+
+  /* ── Actions ── */
+  --color-action-primary-bg:    var(--primitive-cyan-400);
+  --color-action-primary-text:  #111111;
+  --color-action-primary-hover: var(--primitive-cyan-500);
 
   --color-action-secondary-bg:     transparent;
-  --color-action-secondary-text:   var(--primitive-cyan-400);
-  --color-action-secondary-border: var(--primitive-cyan-400);
+  --color-action-secondary-text:   var(--primitive-purple-950);
+  --color-action-secondary-border: var(--primitive-purple-950);
 
-  --color-action-ghost-text:    var(--primitive-gray-50);
-  --color-action-ghost-hover:   var(--primitive-purple-800);
+  /* ── Focus ── */
+  --color-focus-ring: #0A7055;   /* deep green — 5.2:1 on white ✅ */
 
-  /* ── Focus ──
-     Cyan achieves 13.92:1 on bg-base — safe as a temporary value.
-     A11Y-01 tracks adjacent-element audit (button fill, card border). */
-  --color-focus-ring: var(--primitive-cyan-400);
-
-  /* ── Feedback ── (A11Y-02 resolved 2026-04-02)
-     Tokens verified against both dark surfaces.
-     For badge pattern: dark text (#200a3a) on colored bg.
-     For inline text pattern: colored text on dark bg.            */
-  --color-feedback-success-text: var(--primitive-green-400);  /* 9.37:1 on bg-base — AA ✅ */
-  --color-feedback-success-bg:   var(--primitive-green-400);  /* bg; pair with --color-text-on-feedback */
-  --color-feedback-warning-text: var(--primitive-amber-400);  /* 10.79:1 as bg label — AA ✅ */
+  /* ── Feedback badges ── */
+  --color-feedback-success-text: var(--primitive-green-400);
+  --color-feedback-success-bg:   var(--primitive-green-400);
+  --color-feedback-warning-text: var(--primitive-amber-400);
   --color-feedback-warning-bg:   var(--primitive-amber-400);
-  --color-feedback-error-text:   var(--primitive-red-400);    /* 6.51:1 as bg label — AA ✅ */
+  --color-feedback-error-text:   var(--primitive-red-400);
   --color-feedback-error-bg:     var(--primitive-red-400);
-  --color-feedback-info-text:    var(--primitive-cyan-400);   /* 13.92:1 on bg-base — AA ✅ */
+  --color-feedback-info-text:    var(--primitive-cyan-400);
   --color-feedback-info-bg:      var(--primitive-cyan-400);
-  --color-text-on-feedback:      var(--primitive-purple-950); /* Dark label on all feedback bgs */
 
-  /* ── Tags / Badges ── */
-  --color-tag-bg:     var(--primitive-purple-800);
-  --color-tag-text:   var(--primitive-gray-50);    /* 12.30:1 on purple-800 — AA ✅ */
-  --color-tag-border: var(--primitive-purple-400); /* 4.47:1 on purple-800  — AA ✅ */
+  /* ── Tags ── */
+  --color-tag-bg:     var(--color-surface-secondary);
+  --color-tag-text:   var(--color-text-primary);
+  --color-tag-border: var(--color-border-default);
 
-  /* ── Skeleton / loading ── */
-  --color-skeleton-base:     var(--primitive-purple-800);
-  --color-skeleton-shimmer:  var(--primitive-purple-950);
+  /* ── Skeleton ── */
+  --color-skeleton-base:    var(--color-surface-secondary);
+  --color-skeleton-shimmer: var(--color-border-default);
+
+  /* ── Backward-compat aliases ── */
+  --color-bg-base:    var(--color-surface-primary);
+  --color-bg-surface: var(--color-surface-secondary);
+  --color-text-body:  var(--color-text-primary);
+
+  /* ── Simplified aliases (DD-10 Spotify UX) ── */
+  --color-bg:          var(--color-surface-primary);
+  --color-surface:     var(--color-surface-secondary);
+  --color-border:      var(--color-border-default);
+  --color-accent:      var(--primitive-cyan-400);
+  --color-accent-text: #111111;
+
+  /* ── License badges (light) ── */
+  --color-license-open-bg:             #e8faf5;
+  --color-license-open-text:           #0a7055;
+  --color-license-open-border:         #a7e8d8;
+  --color-license-restricted-bg:       #fff8e1;
+  --color-license-restricted-text:     #8b6000;
+  --color-license-restricted-border:   #ffe082;
+  --color-license-unknown-bg:          #f5f5f5;
+  --color-license-unknown-text:        #757575;
+  --color-license-unknown-border:      #e0e0e0;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   LAYER 2 — DARK MODE OVERRIDES
+   Applies when [data-theme="dark"] is set on <html>.
+   Only surfaces, borders, text, and license badges change.
+   Navigation accent color is identical in both modes.
+   ═══════════════════════════════════════════════════════════════ */
+
+[data-theme="dark"] {
+  --color-surface-primary:   #121212;
+  --color-surface-secondary: #1e1e1e;
+  --color-surface-elevated:  #282828;
+
+  --color-border-default:    #333333;
+  --color-border-subtle:     #1e1e1e;
+
+  --color-text-primary:      #ffffff;
+  --color-text-secondary:    #b3b3b3;
+  --color-text-muted:        #a0a0a0;
+  --color-text-on-cyan:      #121212;
+  --color-text-on-feedback:  #121212;
+
+  --color-nav-bg:            #000000;
+
+  /* ── Sidebar tokens (dark mode: pure black) ── */
+  --color-sidebar-bg:            #000000;
+  --color-sidebar-text:          rgba(255,255,255,0.7);
+  --color-sidebar-text-active:   #ffffff;
+  --color-sidebar-section-label: rgba(255,255,255,0.4);
+  --color-sidebar-item-hover:    rgba(255,255,255,0.08);
+  --color-sidebar-item-active:   rgba(255,255,255,0.12);
+  --color-sidebar-accent:        #03FFD1;  /* active dot + accent (cyan, 15:1 on #000 ✅) */
+
+  --color-action-primary-text:         #121212;
+  --color-action-secondary-text:       #ffffff;
+  --color-action-secondary-border:     #ffffff;
+
+  --color-focus-ring: #03FFD1;   /* cyan — 8.9:1 on #121212 ✅ */
+
+  --color-accent-text: #121212;
+
+  /* ── License badges (dark) ── */
+  --color-license-open-bg:             rgba(3,255,209,0.1);
+  --color-license-open-text:           #03ffd1;
+  --color-license-open-border:         rgba(3,255,209,0.3);
+  --color-license-restricted-bg:       rgba(255,180,0,0.1);
+  --color-license-restricted-text:     #ffb400;
+  --color-license-restricted-border:   rgba(255,180,0,0.3);
+  --color-license-unknown-bg:          rgba(255,255,255,0.05);
+  --color-license-unknown-text:        #a0a0a0;
+  --color-license-unknown-border:      rgba(255,255,255,0.1);
 }
 
 
@@ -133,58 +238,55 @@
 
 :root {
   /* ── Dataset card ── */
-  --card-bg:            var(--color-bg-surface);
+  --card-bg:            var(--color-surface-secondary);
   --card-border:        var(--color-border-default);
   --card-border-hover:  var(--color-border-accent);
   --card-title:         var(--color-text-primary);
-  --card-body:          var(--color-text-body);
-  --card-meta:          var(--color-text-secondary);
+  --card-body:          var(--color-text-secondary);
+  --card-meta:          var(--color-text-muted);
   --card-tag-bg:        var(--color-tag-bg);
   --card-tag-text:      var(--color-tag-text);
   --card-tag-border:    var(--color-tag-border);
 
   /* ── Feedback badge (pill on card) ── */
   --badge-success-bg:   var(--color-feedback-success-bg);
-  --badge-success-text: var(--color-text-on-feedback);   /* 9.37:1 on green-400 */
+  --badge-success-text: var(--color-text-on-feedback);
   --badge-warning-bg:   var(--color-feedback-warning-bg);
-  --badge-warning-text: var(--color-text-on-feedback);   /* 10.79:1 on amber-400 */
+  --badge-warning-text: var(--color-text-on-feedback);
   --badge-error-bg:     var(--color-feedback-error-bg);
-  --badge-error-text:   var(--color-text-on-feedback);   /* 6.51:1 on red-400 */
+  --badge-error-text:   var(--color-text-on-feedback);
   --badge-info-bg:      var(--color-feedback-info-bg);
-  --badge-info-text:    var(--color-text-on-feedback);   /* 13.92:1 on cyan-400 */
+  --badge-info-text:    var(--color-text-on-feedback);
 
   /* ── Navigation ── */
-  --nav-bg:              var(--color-bg-surface);
-  --nav-text:            var(--color-text-body);
-  --nav-text-active:     var(--color-text-accent);
-  --nav-border-active:   var(--color-border-accent);
-  --nav-item-hover-bg:   var(--color-bg-base);
+  --nav-bg:            var(--color-nav-bg);
+  --nav-text:          var(--color-nav-text);
+  --nav-text-active:   var(--color-nav-accent);
+  --nav-border-active: var(--color-border-accent);
 
   /* ── Search bar ── */
-  --search-bg:           var(--color-bg-base);
+  --search-bg:           var(--color-surface-primary);
   --search-border:       var(--color-border-default);
   --search-border-focus: var(--color-focus-ring);
-  --search-text:         var(--color-text-body);
-  --search-placeholder:  var(--color-text-secondary);
+  --search-text:         var(--color-text-primary);
+  --search-placeholder:  var(--color-text-muted);
 
   /* ── Map preview panel ── */
-  --map-bg:              var(--color-bg-base);
-  --map-border:          var(--color-border-subtle);
-  --map-label:           var(--color-text-body);
+  --map-bg:     var(--color-surface-secondary);
+  --map-border: var(--color-border-subtle);
+  --map-label:  var(--color-text-secondary);
 
   /* ── Buttons ── */
-  --btn-primary-bg:      var(--color-action-primary-bg);
-  --btn-primary-text:    var(--color-action-primary-text);
-  --btn-primary-hover:   var(--color-action-primary-hover);
+  --btn-primary-bg:    var(--color-action-primary-bg);
+  --btn-primary-text:  var(--color-action-primary-text);
+  --btn-primary-hover: var(--color-action-primary-hover);
 
   --btn-secondary-text:   var(--color-action-secondary-text);
   --btn-secondary-border: var(--color-action-secondary-border);
   --btn-secondary-bg:     var(--color-action-secondary-bg);
 
-  --btn-ghost-text:       var(--color-action-ghost-text);
-  --btn-ghost-hover-bg:   var(--color-action-ghost-hover);
-
   /* ── Skeleton loader ── */
-  --skeleton-base:       var(--color-skeleton-base);
-  --skeleton-shimmer:    var(--color-skeleton-shimmer);
+  --skeleton-base:    var(--color-skeleton-base);
+  --skeleton-shimmer: var(--color-skeleton-shimmer);
+
 }

@@ -2,7 +2,7 @@
 
 > **Document status**: Draft v1.0  
 > **Agent**: product-strategist  
-> **Last updated**: 2026-04-02  
+> **Last updated**: 2026-04-05  
 > **References**: product/design-decisions.md, research/pain-points.md
 
 ---
@@ -62,6 +62,26 @@ What is actually built in this project. Scoped to demonstrate the core design th
 | `NotFoundPage` | `pages/NotFoundPage.tsx` |
 | A11y review pass (all components) | `a11y-reviewer` sign-off |
 | README completion | `docs-manager` |
+
+### Phase 5 — Spotify UX (Week 4)
+**Goal**: Elevate the catalog experience from "database list" to "data experience platform" — embodying Hub Ocean's own positioning as "the Spotify of ocean data."
+
+| Task | Status | Output | Priority |
+|---|---|---|---|
+| Light mode first (DD-15) | ✅ Done | `styles/tokens.css` | Must |
+| Sidebar layout (DD-10) | ✅ Done | `components/layout/AppShell.tsx` | Must |
+| Card removes map thumbnail, uses region badge (DD-13) | ✅ Done | `components/catalog/DatasetCard.tsx` | Must |
+| Focus state unified (WCAG 2.4.11 Non-text Contrast AA) | ✅ Done | `styles/globals.css`, `styles/tokens.css` | Must |
+| Sidebar collapse icon redesign (panel icon) | ✅ Done | `components/layout/AppShell.tsx` | Should |
+| Sidebar light mode redesign (light background + theme-aware logo) | ✅ Done | `components/layout/AppShell.tsx`, `assets/ODP-Logo-Light.svg` | Should |
+| Loading animation inline (within grid area, not full-screen overlay) | ✅ Done | `components/catalog/LoadingScreen.tsx` | Should |
+| Detail page flat map (DD-14) | Pending | `components/catalog/OceanMap.tsx` | Must |
+| Dark mode toggle | Pending | `AppShell` header button | Should |
+| Playbar UI (static) | Pending | `components/player/Playbar.tsx` | Should |
+| Waveform animation (time-series data) | Pending | `components/player/WaveAnimation.tsx` | Should |
+| Geographic point animation (spatial data) | Pending | `components/player/MapAnimation.tsx` | Should |
+| Onboarding survey modal | Pending | `components/onboarding/OnboardingModal.tsx` | Should |
+| localStorage preference persistence | Pending | `src/lib/preferences.ts` | Should |
 
 ---
 

@@ -1,8 +1,8 @@
 # User Personas — Ocean Data Platform
 
-> **Document status**: Draft v1.0  
-> **Agent**: research-analyst  
-> **Last updated**: 2026-04-02  
+> **Document status**: Draft v1.1
+> **Agent**: research-analyst
+> **Last updated**: 2026-04-03
 > **Informs**: pain-points.md, design-decisions.md, positioning.md
 
 ---
@@ -20,16 +20,18 @@ These are informed hypotheses, not ethnographic research. They should be validat
 
 ## Persona 1: The Marine Researcher
 
-**Name**: Dr. Lena Hartmann  
-**Role**: Postdoctoral researcher in marine ecology  
-**Institution**: University research institute (mid-sized, EU-based)  
-**Technical literacy**: High — comfortable with Python, R, Jupyter notebooks, APIs  
+**Name**: Dr. Lena Hartmann
+**Role**: Postdoctoral researcher in marine ecology
+**Institution**: Institute of Marine Research (IMR), Norway — a Hub Ocean partner institution
+**Technical literacy**: High — comfortable with Python, R, Jupyter notebooks, APIs; actively uses LLM tools (ChatGPT, Perplexity) for literature synthesis and exploratory data analysis
 
 ### What she's trying to DO on ODP
 
-Lena is preparing a grant proposal on Southern Ocean biodiversity. She needs to assess whether ODP has acoustic data that overlaps with her study area (60°S–75°S) and time window (2015–2023). She has about 20 minutes before her next meeting.
+Lena is validating a Southern Ocean krill population model using acoustic survey data from Aker BioMarine's research vessels. She needs to confirm the dataset covers her study area (60°S–75°S) and time window (2015–2023), and that she can cite it in her methods section.
 
 Her task is not "explore the platform." Her task is: **"Does this specific dataset cover my study area and period? Can I cite it in my methods section?"**
+
+She already uses LLM tools to draft literature reviews and pre-process data pipelines. She wonders whether ODP's data could feed directly into these workflows — or whether she'll be back to copy-pasting metadata by hand.
 
 ### What she does today without ODP
 
@@ -61,10 +63,10 @@ She doesn't need to read a paragraph. She knows in 15 seconds this is worth inve
 
 ## Persona 2: The Industry Data Manager
 
-**Name**: Marcus Lindqvist  
-**Role**: Environmental data manager at an offshore energy company  
-**Institution**: Mid-large energy company operating in Nordic and North Sea waters  
-**Technical literacy**: Medium-high — understands data formats, APIs, GIS; not a developer  
+**Name**: Marcus Lindqvist
+**Role**: Environmental data manager at an offshore energy company
+**Institution**: Aker BP or TGS — Hub Ocean industry partners with active data contributions to ODP
+**Technical literacy**: Medium-high — understands data formats, APIs, GIS; not a developer
 
 ### What he's trying to DO on ODP
 
@@ -72,9 +74,13 @@ Marcus's company is sharing metocean data from six North Sea platforms as part o
 
 His secondary task: find comparable datasets from other operators to benchmark his company's data quality and coverage.
 
+He also has a new deadline: the annual sustainability report is due in six weeks, and the ESG chapter must include evidence of open data contributions. His legal team wants to cite specific datasets that are publicly accessible — "shared in good faith" — as proof of corporate transparency.
+
 ### What he does today without ODP
 
 His company publishes data through internal portals with limited external visibility. Sharing with research partners means email threads and manual access grants. He has no way to know if anyone is actually using the data they publish.
+
+He found ODP through the Ocean Data Action Coalition working group, where his company is a member. He expected the platform to make the "data-sharing story" easy to communicate externally.
 
 ### What frustrates him about the current ODP UI
 
@@ -95,16 +101,18 @@ Marcus can open his published dataset, see exactly what a first-time visitor wou
 
 ## Persona 3: The Policy Analyst
 
-**Name**: Amara Diallo  
-**Role**: Ocean policy advisor at an international NGO  
-**Institution**: Ocean-focused NGO working with governments on marine protected areas (30×30 initiative)  
-**Technical literacy**: Low-medium — comfortable with Excel, GIS viewers, reports; not a data engineer  
+**Name**: Amara Diallo
+**Role**: Ocean policy advisor and data access coordinator
+**Institution**: UN Ocean Decade Corporate Data Group (CDG) — Hub Ocean is a named participant in this working group, listed on their website
+**Technical literacy**: Low-medium — comfortable with Excel, GIS viewers, reports; not a data engineer
 
 ### What she's trying to DO on ODP
 
-Amara is preparing a briefing for a government delegation on marine protected area coverage in the Western Indian Ocean. She's heard that ODP has biodiversity observation data relevant to her region. She needs to understand: what data exists, what it shows, and whether it can be cited in a policy document.
+Amara is building the progress report for the 30×30 target — the global commitment to protect 30% of the ocean by 2030. She needs to find citable MPA (marine protected area) coverage data to support the report's claims about current protection levels.
 
 She is not going to download a CSV and run an analysis. She needs to understand the data well enough to either cite it or pass it to a data analyst colleague.
+
+She already knows Hub Ocean is an Ocean Panel partner and a member of the Ocean Data Action Coalition. She specifically came to ODP because of that institutional credibility — but once she's on the platform, she can't find any reference to it. There's no "about this platform" context, no affiliation badge, no signal that this data comes from a vetted institutional source. She's not sure she can cite it in an official UN document without that provenance.
 
 ### What she does today without ODP
 
@@ -117,6 +125,7 @@ She relies on published reports, IUCN databases, and colleagues at research inst
 - There's no narrative context: "Here's what this data tells us about the Southern Ocean ecosystem." It's all schema, no story.
 - The "Explore map" and "Explore table" actions are labeled with (Beta) tags — this makes her uncertain whether the tools are reliable enough to cite.
 - She can't tell who produced the data, whether the organization is credible, or whether the data has been peer-reviewed or validated.
+- **New frustration**: She knows Hub Ocean is a member of the Ocean Panel's Ocean Data Action Coalition — that's why she's here. But the platform UI shows no trace of this institutional affiliation. There's no "Hub Ocean is a UN Ocean Decade partner" statement, no coalition badge, no link to their governance page. She can't cite ODP as an authoritative source in a UN document if she can't confirm its institutional standing from within the platform itself.
 
 ### What success looks like
 
@@ -161,8 +170,8 @@ These personas are not reachable through the same channels:
 | Persona | Where they discover new tools |
 |---|---|
 | Lena | Conference talks (Ocean Sciences, AGU), preprint citations, lab Slack/Teams |
-| Marcus | Industry working groups, sustainability reporting frameworks, partner referrals |
-| Amara | NGO networks, UN working groups, government briefings, trusted colleagues |
+| Marcus | Ocean Data Action Coalition working group, industry sustainability reporting frameworks, partner referrals |
+| Amara | UN Ocean Decade networks, NGO networks, government briefings, trusted colleagues |
 
 None of these are paid digital advertising channels. All require **trust-based, community-driven discovery** — which directly informs the marketing strategy in `positioning.md`.
 

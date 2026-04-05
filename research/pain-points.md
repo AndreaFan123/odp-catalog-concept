@@ -2,7 +2,7 @@
 
 > **Document status**: Draft v1.0  
 > **Agent**: research-analyst  
-> **Last updated**: 2026-04-02  
+> **Last updated**: 2026-04-03  
 > **Source**: Current ODP dataset detail UI (screenshot, April 2026) + STAC API response analysis  
 > **Informs**: product/problem-statement.md, product/design-decisions.md, design/style-guide.md
 
@@ -130,12 +130,58 @@ Pain points are organized by severity. Each entry maps to at least one persona f
 
 ---
 
+### PP-12: Filter 工具的操作方式和語意不明確
+
+**Persona**: 所有三個 persona（Lena、Marcus、Amara）
+**UI Element**: Catalog page — 左側 Filter 側欄（地球互動地圖、Date Range 輸入框）
+**User Impact**: 使用者預設只使用關鍵字搜尋，因為地球地圖看起來像裝飾元素而非互動工具，日期輸入框的用途不明確（是資料時間範圍還是發布日期？）。大多數使用者不會發現地點篩選和時間篩選的存在，直到主動嘗試——這代表他們的搜尋結果永遠是未經地理和時間篩選的完整列表。
+**Evidence**: 現有 ODP catalog UI 截圖（2026-04-03）顯示：地球地圖無游標提示、無操作說明、無視覺 affordance；Date Range 僅顯示 yyyy/mm/dd 空白輸入框，無說明這是篩選資料的時間範圍。
+**Root cause**: Progressive disclosure 實作不完整——功能存在但對使用者不透明，沒有任何線索提示「這裡還有更多篩選工具」。
+**Severity**: High
+
+---
+
+### PP-13: Citation 實作不一致
+
+**Persona**: Lena (Researcher), Amara (Policy), Sofia (ESG)
+**UI Element**: Dataset detail page — Citation 區塊
+**User Impact**: Citation 區塊在部分 dataset 存在（如 North Pacific whale distribution dataset），但在其他 dataset 完全缺席。格式和位置也不統一——使用者無法預期在哪裡找到引用資訊，每次都需要重新尋找。對 Amara 和 Sofia 來說，找不到 citation 等於這份資料無法使用——她們不會去自己組裝引用格式。
+**Evidence**: 截圖對比顯示 North Pacific dataset 有 Citation 區塊（含 DOI 連結），但 PGS biota dataset 截圖中無此區塊。兩者位置和格式也不相同。
+**Root cause**: Citation 可能是 provider 自行提供的選填欄位，而非平台強制要求的結構化資料。
+**Severity**: High
+
+---
+
+### PP-14: 地圖顯示航線而非覆蓋範圍
+
+**Persona**: Lena (Researcher), Amara (Policy)
+**UI Element**: Dataset detail page — 右側 Mapbox 地圖
+**User Impact**: North Pacific whale distribution dataset 的地圖顯示一條從亞洲到美洲的船舶航線，而非資料實際覆蓋的地理範圍。使用者無法從地圖判斷「這份資料覆蓋了北太平洋的哪個具體區域」。Lena 需要確認資料是否涵蓋她的研究區域（如特定緯度範圍），但地圖無法提供這個答案。這個問題比地圖「在折疊下方」更根本——即使地圖可見，它呈現的也是錯誤的資訊。
+**Evidence**: 截圖顯示 Mapbox 地圖上有一條細線從東亞延伸到南美洲，這是船舶航跡而非 bbox 覆蓋範圍。
+**Root cause**: 地圖可能直接渲染原始 geometry 資料（點位或航跡），而非從 STAC extent.spatial.bbox 計算並視覺化覆蓋範圍。
+**Severity**: Critical — 顯示錯誤資訊比不顯示更危險
+
+---
+
+### PP-15: 技術縮寫欄位名稱無人類語言說明
+
+**Persona**: Amara (Policy), Sofia (ESG)
+**UI Element**: Dataset detail page — Tabular data 欄位預覽
+**User Impact**: North Pacific dataset 的欄位名稱包含 `sst_sd`、`bathy`、`sla`、`bathy_sd`、`PPupper200m`。這些科學縮寫對非海洋學背景的用戶完全不透明。即使是 Lena，如果不在這個專業子領域，也需要查詢才知道 `sla` 是 sea level anomaly。Amara 和 Sofia 看到這個表格會直接放棄這份資料，即使它實際上完全符合她們的需求。
+**Evidence**: 截圖顯示欄位名稱 `geometry`、`longitude`、`sst_sd`、`bathy`、`sla`、`bathy_sd`、`PPupper200m`、`sst`，無任何說明文字。
+**Root cause**: 欄位名稱直接來自原始資料 schema，平台沒有提供 provider 補充人類可讀說明的機制，也沒有從標準詞彙表（如 CF Conventions）自動對應欄位描述的功能。
+**Severity**: High
+
+---
+
 ## Cross-Cutting Insight
 
-All 11 pain points trace back to a single root cause:
+All 15 pain points trace back to a single root cause:
 
 > **The current ODP UI is designed for users who already know what they're looking for and understand the domain vocabulary. It does not serve users who are evaluating fitness-for-purpose.**
 
 This is the design thesis the redesign must address. The solution is not to remove technical depth — Lena needs it. The solution is to **layer information**: lead with the most decision-critical facts in plain language, and reveal technical depth progressively for users who want it.
 
 This principle maps directly to Hub Ocean's JD requirement: *"reduce complexity in data-heavy workflows through clear interface design."*
+
+**2026-04-03 更新**：實際測試 ODP 平台後發現三個額外問題（PP-13、PP-14、PP-15）。PP-14 特別值得注意——地圖顯示錯誤資訊（航線而非覆蓋範圍）比不顯示資訊更危險，因為它可能導致使用者做出錯誤的資料適用性判斷。這強化了我們在 SpatialThumbnail 和 OceanMap 元件設計中使用 STAC bbox 而非原始 geometry 的決策（參見 design-decisions.md DD-02）。

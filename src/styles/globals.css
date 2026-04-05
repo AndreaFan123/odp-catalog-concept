@@ -1,164 +1,204 @@
-@import "tailwindcss";
 @import "./tokens.css";
 
-/**
- * globals.css — ODP Catalog Concept
- *
- * Responsibilities:
- *  1. @theme  — map semantic tokens to Tailwind v4 utilities
- *  2. base    — global element defaults (body, selection, scrollbar)
- *  3. focus   — :focus-visible ring using --color-focus-ring
- *  4. motion  — prefers-reduced-motion overrides
- *
- * Rule: never hardcode a color value here. Always reference a token.
- */
-
-
 /* ─────────────────────────────────────────────────────────────────
-   @theme — Tailwind v4 design token bridge
-   Maps CSS custom properties to Tailwind utility classes.
-   Usage: bg-surface, text-body, border-accent, etc.
+   CSS Reset — Josh Comeau (joshwcomeau.com/css/custom-css-reset/)
    ───────────────────────────────────────────────────────────────── */
 
-@theme {
-  /* Surfaces */
-  --color-bg-base:     var(--color-bg-base);
-  --color-bg-surface:  var(--color-bg-surface);
-  --color-bg-overlay:  var(--color-bg-overlay);
-  --color-bg-inverse:  var(--color-bg-inverse);
-
-  /* Text */
-  --color-text-primary:    var(--color-text-primary);
-  --color-text-body:       var(--color-text-body);
-  --color-text-secondary:  var(--color-text-secondary);
-  --color-text-accent:     var(--color-text-accent);
-  --color-text-brand:      var(--color-text-brand);
-  --color-text-on-light:   var(--color-text-on-light);
-  --color-text-on-cyan:    var(--color-text-on-cyan);
-
-  /* Borders */
-  --color-border-default:  var(--color-border-default);
-  --color-border-subtle:   var(--color-border-subtle);
-  --color-border-accent:   var(--color-border-accent);
-
-  /* Interactive */
-  --color-action-primary-bg:    var(--color-action-primary-bg);
-  --color-action-primary-text:  var(--color-action-primary-text);
-  --color-action-primary-hover: var(--color-action-primary-hover);
-
-  /* Feedback */
-  --color-feedback-success-text: var(--color-feedback-success-text);
-  --color-feedback-success-bg:   var(--color-feedback-success-bg);
-  --color-feedback-warning-text: var(--color-feedback-warning-text);
-  --color-feedback-warning-bg:   var(--color-feedback-warning-bg);
-  --color-feedback-error-text:   var(--color-feedback-error-text);
-  --color-feedback-error-bg:     var(--color-feedback-error-bg);
-  --color-feedback-info-text:    var(--color-feedback-info-text);
-  --color-feedback-info-bg:      var(--color-feedback-info-bg);
-  --color-text-on-feedback:      var(--color-text-on-feedback);
-
-  /* Focus */
-  --color-focus-ring: var(--color-focus-ring);
+/* 1. Use a more-intuitive box-sizing model */
+*, *::before, *::after {
+  box-sizing: border-box;
 }
 
+/* 2. Remove default margin */
+* {
+  margin: 0;
+}
+
+/* 3. Allow percentage-based heights in the app */
+html, body {
+  height: 100%;
+}
+
+/* 4. Add accessible line-height
+   5. Improve text rendering */
+body {
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 6. Improve media defaults */
+img, picture, video, canvas, svg {
+  display: block;
+  max-width: 100%;
+}
+
+/* 7. Inherit fonts for form elements */
+input, button, textarea, select {
+  font: inherit;
+}
+
+/* 8. Avoid text overflows */
+p, h1, h2, h3, h4, h5, h6 {
+  overflow-wrap: break-word;
+}
+
+/* 9. Improve line wrapping */
+p {
+  text-wrap: pretty;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  text-wrap: balance;
+}
+
+/* 10. Create a root stacking context
+   #root = Vite entry point; #__next = Next.js (kept for reference) */
+#root, #__next {
+  isolation: isolate;
+}
 
 /* ─────────────────────────────────────────────────────────────────
-   Base — global element defaults
+   Base — design token application
    ───────────────────────────────────────────────────────────────── */
 
-@layer base {
-  *,
-  *::before,
-  *::after {
-    box-sizing: border-box;
-  }
+body {
+  background-color: var(--color-surface-primary);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+}
 
-  html {
-    /* Prevent font inflation on mobile */
-    -webkit-text-size-adjust: 100%;
-    text-size-adjust: 100%;
-  }
+/* ─────────────────────────────────────────────────────────────────
+   Responsive — Collection Grid
+   ───────────────────────────────────────────────────────────────── */
 
-  body {
-    background-color: var(--color-bg-base);
-    color: var(--color-text-body);
-    /* System font stack — no custom font loading until typeface is decided */
-    font-family:
-      ui-sans-serif,
-      system-ui,
-      -apple-system,
-      BlinkMacSystemFont,
-      "Segoe UI",
-      sans-serif;
-    line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
+.collection-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 24px;
+}
 
-  /* Text selection */
-  ::selection {
-    background-color: var(--primitive-cyan-400);
-    color: var(--color-text-on-cyan);
-  }
-
-  /* Scrollbar — subtle, matches surface color */
-  ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-  }
-
-  ::-webkit-scrollbar-track {
-    background: var(--color-bg-base);
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background: var(--color-border-default);
-    border-radius: 4px;
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
-    background: var(--color-border-accent);
+@media (min-width: 768px) and (max-width: 1024px) {
+  .collection-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
   }
 }
 
-
-/* ─────────────────────────────────────────────────────────────────
-   Focus — :focus-visible ring
-   Applies to all interactive elements. Uses keyboard-only focus
-   (:focus-visible) to avoid ring on mouse click.
-   Ring is 2px solid + 2px offset for clear contrast against both
-   dark surfaces and cyan button fills.
-   A11Y-01: adjacent-element audit pending — cyan is safe for now.
-   ───────────────────────────────────────────────────────────────── */
-
-@layer base {
-  :focus-visible {
-    outline: 2px solid var(--color-focus-ring);
-    outline-offset: 2px;
-    border-radius: 2px;
-  }
-
-  /* Remove default outline — we handle it above */
-  :focus:not(:focus-visible) {
-    outline: none;
+@media (max-width: 767px) {
+  .collection-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
   }
 }
 
-
 /* ─────────────────────────────────────────────────────────────────
-   Motion — prefers-reduced-motion
-   Disables transitions and animations for users who prefer less
-   motion (vestibular disorders, epilepsy, personal preference).
-   Skeleton shimmer and map transitions are the main targets.
+   Focus state — unified system
    ───────────────────────────────────────────────────────────────── */
 
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
+/* Reset browser default */
+*:focus {
+  outline: none;
 }
+
+/* Keyboard navigation only */
+*:focus-visible {
+  outline: 3px solid var(--color-focus-ring);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* DatasetCard — overflow:hidden clips outline, use box-shadow instead */
+.dataset-card {
+  border-radius: 8px;
+}
+
+.dataset-card:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px var(--color-bg),
+    0 0 0 4px var(--color-focus-ring);
+}
+
+/* SaveButton — circular element needs circular focus ring */
+.save-button:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px var(--color-bg),
+    0 0 0 4px var(--color-focus-ring);
+  border-radius: 50%;
+}
+
+/* Search input — match input's border-radius */
+#catalog-search:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 0;
+  border-radius: 8px;
+}
+
+/* Year selects */
+#year-from:focus-visible,
+#year-to:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 0;
+  border-radius: 8px;
+}
+
+/* SVG elements — no focus ring needed inside components */
+svg:focus-visible {
+  outline: none;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   Sidebar header — theme-aware logo + background
+   ───────────────────────────────────────────────────────────────── */
+
+/* Light mode: match sidebar body background, purple logo */
+.sidebar-header {
+  background-color: #f5f5f5;
+}
+.sidebar-logo-dark  { display: none; }
+.sidebar-logo-light { display: block; }
+
+/* Dark mode: black header, white logo */
+[data-theme="dark"] .sidebar-header {
+  background-color: #000000;
+}
+[data-theme="dark"] .sidebar-logo-dark  { display: block; }
+[data-theme="dark"] .sidebar-logo-light { display: none; }
+
+/* Collapse button: dark on light bg, light on dark bg */
+.sidebar-toggle-btn { color: rgba(0,0,0,0.35); }
+.sidebar-toggle-btn:hover { color: rgba(0,0,0,0.75); }
+[data-theme="dark"] .sidebar-toggle-btn { color: rgba(255,255,255,0.5); }
+[data-theme="dark"] .sidebar-toggle-btn:hover { color: rgba(255,255,255,0.9); }
+
+/* ─────────────────────────────────────────────────────────────────
+   Skip to main content
+   ───────────────────────────────────────────────────────────────── */
+
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 0;
+  padding: 8px 16px;
+  background: var(--color-accent);
+  color: var(--color-accent-text);
+  font-weight: 600;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  text-decoration: none;
+  z-index: 9999;
+  border-radius: 0 0 8px 0;
+}
+
+.skip-link:focus {
+  top: 0;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   Tailwind
+   ───────────────────────────────────────────────────────────────── */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
