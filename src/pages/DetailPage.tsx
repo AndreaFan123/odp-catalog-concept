@@ -18,7 +18,7 @@ import {
 } from '../lib/format'
 import { AppShell } from '../components/layout/AppShell'
 import { UserMenu } from '../components/layout/UserMenu'
-import { DatasetCard } from '../components/catalog/DatasetCard'
+import { DatasetCard as _DatasetCard } from '../components/catalog/DatasetCard'
 import { LoadingScreen } from '../components/ui/LoadingScreen'
 import { useWindowWidth, BP_TABLET, BP_DESKTOP } from '../lib/useWindowWidth'
 import { getMockCollection } from '../lib/mockCollectionData'
@@ -269,7 +269,7 @@ export function DetailPage() {
   const isMobile = width < BP_TABLET
 
   const [state, setState] = useState<AsyncState<STACCollection>>({ status: 'loading' })
-  const [allCollections, setAllCollections] = useState<STACCollection[]>([])
+  const [, setAllCollections] = useState<STACCollection[]>([])
   const [descExpanded, setDescExpanded] = useState(false)
   const [keywordsExpanded, setKeywordsExpanded] = useState(false)
   const [datasetsExpanded, setDatasetsExpanded] = useState(false)
@@ -368,11 +368,6 @@ export function DetailPage() {
   const visibleDatasets: CatalogDataset[] = datasetsExpanded
     ? allDatasets
     : allDatasets.slice(0, DATASET_LIMIT)
-
-  // Related datasets — same provider, exclude current
-  const related = allCollections
-    .filter((c) => c.id !== collection.id && c.providers?.[0]?.name === providerName)
-    .slice(0, 3)
 
   // Description truncation
   const TRUNCATE_AT = 300
@@ -609,21 +604,11 @@ export function DetailPage() {
             marginBottom: 24,
             borderBottom: '1px solid var(--color-border)',
             display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
+            alignItems: 'flex-end',
+            justifyContent: 'flex-end',
           }}
         >
-          <div
-            style={{
-              fontSize: 13,
-              fontFamily: 'var(--font-sans)',
-              color: 'var(--color-text-secondary)',
-              letterSpacing: '0.01em',
-            }}
-          >
-            Ocean Data Platform
-          </div>
-          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+          <div style={{ display: 'flex', gap: 8, alignItems: 'flex-end' }}>
             <ThemeToggle theme={theme} onToggle={toggleTheme} />
             <UserMenu onCategoryChange={() => {}} />
           </div>
@@ -860,7 +845,7 @@ export function DetailPage() {
             )}
 
             {/* Related datasets */}
-            {related.length > 0 && (
+            {/* {related.length > 0 && (
               <div style={{ marginBottom: 32 }}>
                 <SectionLabel>More from this provider</SectionLabel>
                 <div
@@ -875,7 +860,7 @@ export function DetailPage() {
                   ))}
                 </div>
               </div>
-            )}
+            )} */}
           </div>
 
           {/* ── Right column ─────────────────────────────────────── */}

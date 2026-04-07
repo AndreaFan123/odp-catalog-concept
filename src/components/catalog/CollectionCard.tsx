@@ -164,7 +164,7 @@ export function CollectionCard({ collection, onKeywordClick }: CollectionCardPro
       tabIndex={0}
       role="article"
       style={{
-        height: 200,
+        height: 220,
         position: 'relative',
         backgroundColor: hovered ? 'var(--color-surface-elevated)' : 'var(--color-surface)',
         border: `1px solid ${hovered ? 'var(--color-sidebar-accent)' : 'var(--color-border)'}`,
@@ -185,14 +185,14 @@ export function CollectionCard({ collection, onKeywordClick }: CollectionCardPro
       <div style={{ display: 'flex', gap: 6, alignItems: 'center', flexShrink: 0 }}>
         <span
           style={{
-            fontSize: 10,
+            fontSize: 11,
             fontFamily: 'var(--font-mono)',
             fontWeight: 600,
             color: 'var(--color-text-secondary)',
             backgroundColor: 'var(--color-surface-elevated)',
             border: '1px solid var(--color-border)',
             borderRadius: 4,
-            padding: '1px 6px',
+            padding: '2px 7px',
             textTransform: 'uppercase',
             letterSpacing: '0.04em',
           }}
@@ -201,7 +201,7 @@ export function CollectionCard({ collection, onKeywordClick }: CollectionCardPro
         </span>
         <span
           style={{
-            fontSize: 10,
+            fontSize: 11,
             fontFamily: 'var(--font-mono)',
             color: licenseInfo.open
               ? 'var(--color-license-open-text)'
@@ -210,7 +210,7 @@ export function CollectionCard({ collection, onKeywordClick }: CollectionCardPro
               ? 'var(--color-license-open-bg)'
               : 'var(--color-license-restricted-bg)',
             borderRadius: 4,
-            padding: '1px 6px',
+            padding: '2px 7px',
           }}
         >
           {licenseInfo.label}
@@ -220,7 +220,7 @@ export function CollectionCard({ collection, onKeywordClick }: CollectionCardPro
       {/* Row 2: title */}
       <div
         style={{
-          fontSize: 14,
+          fontSize: 15,
           fontWeight: 700,
           fontFamily: 'var(--font-sans)',
           color: 'var(--color-text-primary)',
@@ -239,7 +239,7 @@ export function CollectionCard({ collection, onKeywordClick }: CollectionCardPro
       {metaParts.length > 0 && (
         <div
           style={{
-            fontSize: 12,
+            fontSize: 13,
             fontFamily: 'var(--font-sans)',
             color: 'var(--color-text-secondary)',
             overflow: 'hidden',
@@ -257,13 +257,13 @@ export function CollectionCard({ collection, onKeywordClick }: CollectionCardPro
         {regionLabel && (
           <span
             style={{
-              fontSize: 11,
+              fontSize: 12,
               fontFamily: 'var(--font-mono)',
               color: 'var(--color-text-secondary)',
               backgroundColor: 'var(--color-surface-elevated)',
               border: '1px solid var(--color-border)',
               borderRadius: 4,
-              padding: '1px 6px',
+              padding: '2px 7px',
             }}
           >
             {regionLabel}
@@ -272,7 +272,7 @@ export function CollectionCard({ collection, onKeywordClick }: CollectionCardPro
         {datasetCount !== null && (
           <span
             style={{
-              fontSize: 11,
+              fontSize: 12,
               fontFamily: 'var(--font-mono)',
               color: 'var(--color-text-muted)',
             }}
@@ -290,7 +290,7 @@ export function CollectionCard({ collection, onKeywordClick }: CollectionCardPro
             gap: 4,
             flexWrap: 'wrap',
             overflow: 'hidden',
-            maxHeight: 24,
+            maxHeight: 26,
             marginTop: 'auto',
             flexShrink: 0,
           }}
@@ -304,15 +304,15 @@ export function CollectionCard({ collection, onKeywordClick }: CollectionCardPro
                 onKeywordClick?.(kw)
               }}
               style={{
-                fontSize: 10,
+                fontSize: 11,
                 fontFamily: 'var(--font-mono)',
                 color: 'var(--color-text-secondary)',
                 backgroundColor: 'var(--color-surface-elevated)',
                 border: '1px solid var(--color-border)',
                 borderRadius: 3,
-                padding: '1px 5px',
+                padding: '2px 6px',
                 cursor: onKeywordClick ? 'pointer' : 'default',
-                lineHeight: '16px',
+                lineHeight: '18px',
               }}
             >
               {kw}
@@ -321,10 +321,10 @@ export function CollectionCard({ collection, onKeywordClick }: CollectionCardPro
           {overflowCount > 0 && (
             <span
               style={{
-                fontSize: 10,
+                fontSize: 11,
                 fontFamily: 'var(--font-mono)',
                 color: 'var(--color-text-muted)',
-                lineHeight: '18px',
+                lineHeight: '20px',
               }}
             >
               +{overflowCount}

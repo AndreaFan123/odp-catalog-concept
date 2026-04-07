@@ -104,7 +104,7 @@ function YearSelect({ id, label, value, onChange }: YearSelectProps) {
           backgroundColor: 'var(--color-surface)',
           color: 'var(--color-text-primary)',
           fontFamily: 'var(--font-sans)',
-          fontSize: 13,
+          fontSize: 14,
           cursor: 'pointer',
           appearance: 'auto',
         }}
@@ -377,7 +377,7 @@ export function CatalogPage() {
           }}
         >
           <YearSelect id="year-from" label="From year" value={fromYear} onChange={handleFromYearChange} />
-          <span aria-hidden="true" style={{ color: 'var(--color-text-muted)', fontSize: 13, userSelect: 'none' }}>—</span>
+          <span aria-hidden="true" style={{ color: 'var(--color-text-muted)', fontSize: 14, userSelect: 'none' }}>—</span>
           <YearSelect id="year-to" label="To year" value={toYear} onChange={handleToYearChange} />
           {hasActiveFilters && (
             <button
@@ -392,7 +392,7 @@ export function CatalogPage() {
                 backgroundColor: 'transparent',
                 color: 'var(--color-text-secondary)',
                 fontFamily: 'var(--font-sans)',
-                fontSize: 13,
+                fontSize: 14,
                 cursor: 'pointer',
                 whiteSpace: 'nowrap',
               }}
