@@ -202,3 +202,157 @@ svg:focus-visible {
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ── HomePage animations ── */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.2;
+    transform: translate(-50%, -50%) scale(1);
+    box-shadow: 0 0 0 0 rgba(3,255,209,0.4);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(2);
+    box-shadow: 0 0 0 8px rgba(3,255,209,0);
+  }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(5px); }
+}
+
+/* fade-in — used by legacy components */
+.fade-in {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* fade-up — used by HomePage */
+.fade-up {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.fade-up.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fade-in,
+  .fade-up {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* Pause on hover — applied via class on the track */
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none !important;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   HomePage — Responsive layout
+   ───────────────────────────────────────────────────────────────── */
+
+/* Problem section: 2 col → 1 col on mobile */
+@media (max-width: 767px) {
+  .problem-grid {
+    grid-template-columns: 1fr !important;
+    gap: 40px !important;
+  }
+}
+
+/* Persona grid: 4 col → 2 col (tablet) → 1 col (mobile) */
+@media (max-width: 1023px) {
+  .persona-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+@media (max-width: 767px) {
+  .persona-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Category grid: mobile 2 col */
+@media (max-width: 767px) {
+  .category-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+/* Stats row: mobile stack */
+@media (max-width: 767px) {
+  .stats-row {
+    flex-direction: column !important;
+    gap: 40px !important;
+  }
+}
+
+/* Navbar: mobile padding + hide text links */
+@media (max-width: 767px) {
+  .home-navbar {
+    padding: 0 20px !important;
+  }
+  .home-nav-link {
+    display: none !important;
+  }
+}
+
+/* Sections: mobile padding */
+@media (max-width: 767px) {
+  .home-section {
+    padding: 64px 20px !important;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   Solutions pages — layout and responsive
+   ───────────────────────────────────────────────────────────────── */
+
+@media (max-width: 767px) {
+  .solution-feature-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .solution-main {
+    padding: 48px 20px !important;
+  }
+  .solution-navbar {
+    padding: 0 20px !important;
+  }
+  .solution-footer {
+    padding: 32px 20px !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+}
+
+/* Footer: mobile stack */
+@media (max-width: 767px) {
+  .home-footer {
+    padding: 40px 20px !important;
+  }
+  .footer-inner {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+}

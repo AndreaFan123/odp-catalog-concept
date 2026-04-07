@@ -8,7 +8,7 @@ import { CATEGORIES, matchesCategory } from '../lib/categories'
 import { CollectionGrid } from '../components/catalog/CollectionGrid'
 import { AppShell } from '../components/layout/AppShell'
 import { UserMenu } from '../components/layout/UserMenu'
-import { getSavedIds } from '../components/catalog/DatasetCard'
+import { getSavedIds } from '../components/catalog/CollectionCard'
 import { LoadingScreen } from '../components/ui/LoadingScreen'
 
 // ─── Async state pattern ──────────────────────────────────────────────────────
@@ -212,7 +212,7 @@ function applyFilters(
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export function CatalogPage() {
-  const { keyword, region, license, from, to } = useSearch({ from: '/' })
+  const { keyword, region, license, from, to, category: categoryParam } = useSearch({ from: '/catalog' })
   const navigate = useNavigate()
 
   const windowWidth = useWindowWidth()
@@ -220,7 +220,7 @@ export function CatalogPage() {
 
   const [state, setState] = useState<AsyncState<STACCollection[]>>({ status: 'loading' })
   const [fetchId, setFetchId] = useState(0)
-  const [activeCategory, setActiveCategory] = useState<string>('all')
+  const [activeCategory, setActiveCategory] = useState<string>(categoryParam ?? 'all')
 
   // Theme state — persisted to localStorage, respects OS preference on first load
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
@@ -228,6 +228,11 @@ export function CatalogPage() {
     if (saved === 'light' || saved === 'dark') return saved
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
   })
+
+  // Sync activeCategory when URL param changes (e.g. navigating from homepage)
+  useEffect(() => {
+    setActiveCategory(categoryParam ?? 'all')
+  }, [categoryParam])
 
   // Apply theme to <html> and persist
   useEffect(() => {
@@ -294,8 +299,8 @@ export function CatalogPage() {
     : applyFilters(allCollections, keyword, region, license, activeCategory, fromYear, toYear)
 
   const headingMap: Record<string, string> = {
-    all:           'All Datasets',
-    saved:         'Saved Datasets',
+    all:           'All Collections',
+    saved:         'Saved',
     mydata:        'My Data',
     biodiversity:  'Biodiversity & Species',
     'ocean-physics': 'Ocean Physics',
@@ -311,14 +316,26 @@ export function CatalogPage() {
       activeCategory={activeCategory}
       onCategoryChange={setActiveCategory}
     >
-      {/* ── Toolbar ────────────────────────────────────────────── */}
+      {/* ── Toolbar (sticky) ────────────────────────────────────── */}
+      <div
+        style={{
+          position: 'sticky',
+          top: 0,
+          zIndex: 20,
+          backgroundColor: 'var(--color-bg)',
+          marginLeft: isMobile ? -16 : -32,
+          marginRight: isMobile ? -16 : -32,
+          padding: isMobile ? '16px 16px 12px' : '24px 32px 12px',
+          marginBottom: 16,
+          borderBottom: '1px solid var(--color-border)',
+        }}
+      >
       <div
         style={{
           display: 'flex',
           alignItems: 'center',
           flexWrap: isMobile ? 'wrap' : 'nowrap',
           gap: 8,
-          marginBottom: 24,
           width: '100%',
         }}
       >
@@ -329,8 +346,8 @@ export function CatalogPage() {
           <input
             id="catalog-search"
             type="search"
-            placeholder="Search datasets…"
-            aria-label="Search datasets"
+            placeholder="Search collections…"
+            aria-label="Search collections"
             value={keyword ?? ''}
             onChange={handleKeywordChange}
             style={{
@@ -402,6 +419,7 @@ export function CatalogPage() {
         {/* 8. Guest user avatar */}
         <UserMenu onCategoryChange={setActiveCategory} />
       </div>
+      </div>
 
       {/* Page heading */}
       <header style={{ marginBottom: 16 }}>
@@ -425,7 +443,7 @@ export function CatalogPage() {
           }}
         >
           {state.status === 'success'
-            ? `${filtered.length} of ${totalCount} datasets`
+            ? `${filtered.length} of ${totalCount} collections`
             : state.status === 'loading'
               ? ''
               : 'Hub Ocean Ocean Data Platform'}

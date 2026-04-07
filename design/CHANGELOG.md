@@ -6,7 +6,94 @@ All significant design system decisions are recorded here. Format follows [Keep 
 
 ## [Unreleased]
 
-## [2026-04-05] — Focus state unified; Sidebar redesign; Loading inline; Spotify UX refactor; responsive layout; a11y improvements; DD-13–16
+## [2026-04-06]
+
+### [2026-04-06] — API capability confirmed
+
+#### Catalog API diagnostic results
+
+Live testing confirmed the following public API surface:
+
+| Endpoint | Status |
+|---|---|
+| `GET /api/public/catalog/v1/dataset/{uuid}` | ❌ 404 — not public |
+| `GET /api/public/catalog/v1/jsonld/?uuid={uuid}` | ✅ 200 — limited fields |
+| STAC `isPartOf` / `collection` rel | ❌ undefined / absent |
+
+#### Features confirmed as unimplementable (public API only)
+
+- **DD-16: Part of Collection** — STAC has no `collection` rel; Catalog API is 404; JSON-LD `isPartOf` is `undefined`. All three candidate endpoints exhausted. Replaced by DD-21 ("More from this provider") on the detail page.
+- **DD-22: Tabular metadata** — `num_rows`, `total_byte_size`, `columns` exist only in the Catalog API, which is not publicly accessible. Detail page now shows "Explore the full dataset on Hub Ocean" with [Explore table ↗] and [Explore map ↗] linking to the STAC `alternate` URL.
+
+#### JSON-LD supplementary finding
+
+`isAccessibleForFree` field available at `/api/public/catalog/v1/jsonld/?uuid={uuid}`. Currently returns `true` for all 38 tested datasets — not yet useful for free/premium classification. DD-24 continues to rely on `license` field heuristic.
+
+#### Documents updated
+
+- `product/design-decisions.md` — DD-16, DD-22, DD-24 trade-offs supplemented with confirmed API findings
+- `research/ia-analysis.md` — new "Catalog API Diagnostic" section with endpoint table and capability summary
+
+---
+
+### [2026-04-06] — IA analysis completed
+
+#### New document: research/ia-analysis.md
+
+As-Is IA problems identified on hubocean.earth:
+- External links (Platform, Datasets) visually indistinguishable from internal nav items
+- Sectors has no landing page — four audience segments have no differentiated entry points
+- Events & Media mixes 5 content types — Tides of Transparency buried and undiscoverable
+- Use Cases and Sectors are parallel nav items rather than a hierarchical claim-to-proof structure
+
+To-Be IA improvements proposed:
+- External links moved to utility bar (visually separate from primary nav)
+- Sectors renamed to Solutions with a new landing page
+- Resources section consolidates all content types with clear classification
+- Unresolved: Use Cases should become secondary navigation inside Solutions sub-pages, not a top-level nav item
+
+Platform design implications:
+- The platform Dashboard is the fulfillment of the marketing promise, not a repetition of it
+- Persona routing (DD-27) receives users at the platform entry point carrying the audience identity the marketing site created
+- This establishes the portfolio's strongest design argument: closing the most critical break in the user's end-to-end journey
+
+#### Updated documents
+- `product/problem-statement.md` — added "hubocean.earth IA Issues" and "Platform Dashboard Positioning" subsections under "The Real Problem: Information Architecture"
+- `product/design-decisions.md` — DD-27 Context expanded with IA analysis basis and portfolio design argument
+
+---
+
+## [2026-04-05]
+
+### [2026-04-05] — Use case analysis → Detail page specification
+
+#### Research
+- **user-personas.md**: Added "Detail Page Needs" subsection to all three personas (Lena, Marcus, Amara) — grounded in TGS, Aker BioMarine, Aker BP, ILIAD, and Wallenius Wilhelmsen use cases
+- **pain-points.md**: Added PP-17 through PP-20
+
+| ID | Title | Severity | Persona |
+|---|---|---|---|
+| PP-17 | Access methods hidden inside accordion | High | Marcus, Lena |
+| PP-18 | No SDG tags on dataset pages | High | Amara |
+| PP-19 | Provider credibility information insufficient | Medium | Marcus, Amara |
+| PP-20 | No cross-dataset discovery path | High | Lena, Marcus |
+
+#### Design Decisions
+- **DD-17**: Two-column layout for detail page — left: map + content; right: key stats + access + provider (PP-05, PP-17)
+- **DD-18**: Access panel always visible, no accordion — STAC API / OGC API / Python SDK / R SDK / Workspace (PP-05, PP-17)
+- **DD-19**: SDG tags derived from keywords — surfaces SDG 14 and FAIR alignment without new metadata fields (PP-18)
+- **DD-20**: Provider card with trust signals — name + website + dataset count (PP-19)
+- **DD-21**: Related datasets section — same provider → same category → same region, max 6 cards (PP-20)
+
+#### Roadmap
+- **Phase 3 (Detail Page)** fully specified with two-column layout, component list, and pain point / design decision cross-references
+
+#### Sources
+TGS use case · Aker BioMarine use case · Aker BP press release · ILIAD use case · Wallenius Wilhelmsen TNFD report
+
+---
+
+### [2026-04-05] — Focus state unified; Sidebar redesign; Loading inline; Spotify UX refactor; responsive layout; a11y improvements; DD-13–16
 
 ### Added
 
@@ -55,6 +142,98 @@ All significant design system decisions are recorded here. Format follows [Keep 
 | DD-14 | Detail page flat map (MapLibre) — accurate spatial info over 3D visual impact |
 | DD-15 | Light mode first — aligns with Hub Ocean platform language; dark mode deferred |
 | DD-16 | No Type filter checkbox — Collection relationship shown as discovery entry on card/detail |
+
+### [2026-04-05] — Detail page spec — right column complete
+
+#### Design Decisions
+
+**DD-22: Data preview stats in right column**
+- Added Data preview section below Access panel in the detail page right column
+- Surfaces Size / Columns / Rows parsed from STAC `description` field
+- Fallback text "Available on Hub Ocean" when values are absent
+- [Explore table] and [Explore map] links out to Hub Ocean (no in-app tabular preview)
+- Addresses PP-01 (data quality signals) and PP-15 (buried preview)
+
+**DD-23: Two-map distinction — bbox coverage vs actual data points**
+- Detail page implements a single flat MapLibre map labelled "Spatial coverage"
+- Actual data point exploration links to Hub Ocean's Explore map
+- In-map caption: "Showing spatial coverage extent. Explore actual data points on Hub Ocean"
+- Addresses PP-14 (map confusion)
+
+#### Spec
+
+**Phase 3 right column spec finalised**
+- Right column order confirmed: Key stats → Access panel (DD-18) → Provider card (DD-20) → Data preview (DD-22)
+- Roadmap updated to reflect complete right column spec
+
+#### Evaluation
+
+**Hub Ocean tabular preview evaluation**
+- Strengths: column statistics, dual table/map view
+- Issues: buried below the fold, column names have no explanation, distinction between the two maps is unclear
+
+---
+
+### Research expanded — new persona and pain points (2026-04-05)
+
+**New findings from hubocean.earth analysis**
+
+- **3% Problem:** Only 3% of ocean biodiversity data comes from industry — core platform narrative adopted for homepage (DD-25)
+- **Persona 4 — Sofia Chen (ESG / Nature Finance):** ESG Analyst at DNB / Wallenius Wilhelmsen; drives TNFD and CSRD compliance reporting; requires citable, TNFD-aligned ocean data without writing code
+- **Persona 2 split:** Marcus (2A, data user) and Erik Hansen (2B, data contributor / sustainability lead)
+- **Premium tier:** Ocean Sensitive Areas and similar products are gated; the catalog does not currently distinguish free from premium (PP-21)
+- **Regulatory gap:** No TNFD / CSRD labels or filters in the catalog (PP-22)
+- **Contribution gap:** No "share your data" entry point visible in the catalog (PP-23)
+
+**Research updates**
+
+- `research/user-personas.md` — Persona 4 (Sofia Chen) added; Marcus split into Persona 2A / Persona 2B (Erik Hansen)
+- `research/pain-points.md` — PP-21, PP-22, PP-23 added
+
+**Design decisions**
+
+- DD-24: Free vs premium tier badge on dataset cards and detail page
+- DD-25: "3% Problem" statistic added to homepage Numbers section
+- DD-26: Homepage "Who uses ODP" expanded to 4 persona cards (Researchers / Industry / Policy / ESG & Finance)
+
+**Sources**
+
+- hubocean.earth/ocean-industries-finance
+- Wallenius Wilhelmsen TNFD disclosure case
+- DNB Nature Finance case
+- TGS / Sandy Sporck quote on SDG 14 data sharing
+
+---
+
+### Core design argument established (2026-04-05)
+
+**Problem statement updated**
+
+Added new section: "The Real Problem: Information Architecture"
+
+Documents Hub Ocean's three fundamental IA issues:
+1. Critical information buried at the second and third level (the "3% Problem" is not on the homepage; TNFD/CSRD features are three levels deep; Sofia persona is unaddressed on the homepage; premium tier is never explained)
+2. No persona routing — 38 datasets in a flat list with no task-oriented guidance
+3. Persuasion and utility conflated — new users cannot answer "what does this do for me?"; returning users must re-read marketing content to reach the catalog
+
+**Design decisions**
+
+- **DD-27: Persona routing as primary navigation**
+  Homepage core function is routing, not feature description. Four persona cards link directly to: `/catalog?category=biodiversity` (Researchers), `/catalog?category=industry` (Industry users), `/catalog?category=mpa` (ESG & Finance, with TNFD context), and Hub Ocean data sharing (Industry contributors). Addresses PP-12, PP-18, PP-21, PP-22, PP-23.
+
+- **DD-28: Homepage is task-oriented, not feature-oriented**
+  Five sections only: Hero / Numbers / Browse by category / Persona routing / Footer. Deliberately excludes: How it works, Mission statement, Latest news, Partner logos. Restraint as a signal of design quality.
+
+**Roadmap**
+
+- Phase 6 homepage spec updated to reflect DD-27 and DD-28 as core design principles
+- Five-section structure finalised: Hero → Numbers → Browse by category → Who uses ODP → Footer
+
+**Design argument summary**
+
+Get the right person to the right entry point within 10 seconds — rather than showing every user the same marketing content. This is the strongest single design argument in the project, because it names a real structural flaw in the existing Hub Ocean IA and proposes a focused, testable solution.
+
+---
 
 ## [2026-04-03] — Design system corrected to match platform; personas v1.1; PP-12–15; DD-09; positioning Section 8
 

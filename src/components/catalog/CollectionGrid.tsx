@@ -1,5 +1,5 @@
 import type { STACCollection } from '../../lib/stac'
-import { DatasetCard } from './DatasetCard'
+import { CollectionCard } from './CollectionCard'
 import { DatasetCardSkeleton } from '../ui/Skeleton'
 
 export interface CollectionGridProps {
@@ -31,7 +31,7 @@ function EmptyState({ hasFilters }: { hasFilters?: boolean }) {
         className="text-base mb-2"
         style={{ color: 'var(--color-text-primary)' }}
       >
-        No datasets match your current filters.
+        No collections match your current filters.
       </p>
       <p
         className="text-sm"
@@ -39,7 +39,7 @@ function EmptyState({ hasFilters }: { hasFilters?: boolean }) {
       >
         {hasFilters
           ? 'Try removing a filter to see more results.'
-          : 'No datasets are currently available.'}
+          : 'No collections are currently available.'}
       </p>
     </div>
   )
@@ -55,9 +55,9 @@ export function CollectionGrid({ collections, onKeywordClick }: CollectionGridPr
   }
 
   return (
-    <div className={GRID_CLASS} role="feed" aria-label="Dataset catalog">
+    <div className={GRID_CLASS} role="feed" aria-label="Collection catalog">
       {collections.map((collection) => (
-        <DatasetCard
+        <CollectionCard
           key={collection.id}
           collection={collection}
           onKeywordClick={onKeywordClick}

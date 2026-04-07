@@ -8,10 +8,10 @@
  * Icons: inline SVG, no library dependency.
  */
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useWindowWidth, BP_TABLET, BP_DESKTOP } from '../../lib/useWindowWidth'
-import odplogoUrl from '../../assets/ODP-Logo.svg'
-import odplogoLightUrl from '../../assets/ODP-Logo-Light.svg'
+const odplogoUrl = '/assets/ODP-Logo.svg'
+const odplogoLightUrl = '/assets/ODP-Logo-Light.svg'
 
 
 // ─── Icons ────────────────────────────────────────────────────────────────────
@@ -139,30 +139,6 @@ function IconSidebarToggle() {
   )
 }
 
-function IconMoon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-    </svg>
-  )
-}
-
-function IconSun() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-      <circle cx="12" cy="12" r="5"/>
-      <line x1="12" y1="1" x2="12" y2="3"/>
-      <line x1="12" y1="21" x2="12" y2="23"/>
-      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
-      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-      <line x1="1" y1="12" x2="3" y2="12"/>
-      <line x1="21" y1="12" x2="23" y2="12"/>
-      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
-      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-    </svg>
-  )
-}
-
 // ─── Nav item definitions ─────────────────────────────────────────────────────
 
 interface NavItemDef {
@@ -172,12 +148,12 @@ interface NavItemDef {
 }
 
 const LIBRARY_ITEMS: NavItemDef[] = [
-  { id: 'saved',  label: 'Saved Datasets', icon: <IconHeart /> },
+  { id: 'saved',  label: 'Saved', icon: <IconHeart /> },
   { id: 'mydata', label: 'My Data',         icon: <IconUpload /> },
 ]
 
 const BROWSE_ITEMS: NavItemDef[] = [
-  { id: 'all',           label: 'All Datasets',           icon: <IconGrid /> },
+  { id: 'all',           label: 'All Collections',         icon: <IconGrid /> },
   { id: 'biodiversity',  label: 'Biodiversity & Species',  icon: <IconFish /> },
   { id: 'ocean-physics', label: 'Ocean Physics',           icon: <IconWave /> },
   { id: 'coral',         label: 'Coral & Reef',            icon: <IconCoral /> },
@@ -307,7 +283,7 @@ function CategoryBottomSheet({ open, activeCategory, onSelect, onClose }: Catego
           position: 'fixed',
           bottom: 60,
           left: 0, right: 0,
-          backgroundColor: 'var(--color-nav-bg)',
+          backgroundColor: 'var(--color-sidebar-bg)',
           borderRadius: '16px 16px 0 0',
           padding: '20px 0',
           zIndex: 99,
@@ -331,8 +307,8 @@ function CategoryBottomSheet({ open, activeCategory, onSelect, onClose }: Catego
               fontSize: 16, fontFamily: 'var(--font-sans)',
               fontWeight: activeCategory === item.id ? 500 : 400,
               color: activeCategory === item.id
-                ? 'var(--color-nav-accent)'
-                : 'var(--color-text-primary)',
+                ? 'var(--color-sidebar-accent)'
+                : 'var(--color-sidebar-text-active)',
               background: 'none', border: 'none', cursor: 'pointer',
               textAlign: 'left',
             }}
@@ -365,7 +341,7 @@ function BottomTabBar({ activeCategory, onCategoryChange, onBrowseOpen }: Bottom
     alignItems: 'center', justifyContent: 'center',
     gap: 4, padding: '8px 0',
     cursor: 'pointer', background: 'none', border: 'none',
-    color: active ? 'var(--color-nav-accent)' : 'rgba(255,255,255,0.5)',
+    color: active ? 'var(--color-sidebar-text-active)' : 'var(--color-sidebar-text)',
     fontSize: 10, fontFamily: 'var(--font-sans)',
     transition: 'color 0.15s',
   })
@@ -376,8 +352,8 @@ function BottomTabBar({ activeCategory, onCategoryChange, onBrowseOpen }: Bottom
       style={{
         position: 'fixed', bottom: 0, left: 0, right: 0,
         height: 60,
-        backgroundColor: 'var(--color-nav-bg)',
-        borderTop: '1px solid rgba(255,255,255,0.08)',
+        backgroundColor: 'var(--color-sidebar-bg)',
+        borderTop: '1px solid var(--color-border)',
         display: 'flex',
         zIndex: 97,
       }}
@@ -424,16 +400,22 @@ export function AppShell({
   const width = useWindowWidth()
   const isMobile = width < BP_TABLET
   const isTablet = width >= BP_TABLET && width < BP_DESKTOP
+  const layout = isMobile ? 'mobile' : isTablet ? 'tablet' : 'desktop'
 
   // Collapse state: user toggle on desktop; auto-collapsed on tablet
   const [userCollapsed, setUserCollapsed] = useState(false)
   const [browseSheetOpen, setBrowseSheetOpen] = useState(false)
+  const [prevLayout, setPrevLayout] = useState(layout)
 
-  // Sync collapsed to tablet breakpoint
-  useEffect(() => {
-    if (isTablet) setUserCollapsed(true)
-    else if (width >= BP_DESKTOP) setUserCollapsed(false)
-  }, [isTablet, width])
+  // When layout changes, normalize desktop/tablet collapse (replaces effect + setState)
+  if (layout !== prevLayout) {
+    setPrevLayout(layout)
+    if (layout === 'tablet') {
+      setUserCollapsed(true)
+    } else if (layout === 'desktop') {
+      setUserCollapsed(false)
+    }
+  }
 
   const collapsed = isTablet || userCollapsed
 
@@ -441,7 +423,7 @@ export function AppShell({
     onCategoryChange?.(id)
   }
 
-  const mainPadding = isMobile ? '16px' : '24px 32px'
+  const mainPadding = isMobile ? '0 16px' : '0 32px'
   const mainPaddingBottom = isMobile ? '76px' : '24px'  // extra space for tab bar
 
   return (

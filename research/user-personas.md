@@ -1,8 +1,8 @@
 # User Personas — Ocean Data Platform
 
-> **Document status**: Draft v1.1
+> **Document status**: Draft v1.2
 > **Agent**: research-analyst
-> **Last updated**: 2026-04-03
+> **Last updated**: 2026-04-05
 > **Informs**: pain-points.md, design-decisions.md, positioning.md
 
 ---
@@ -59,9 +59,24 @@ She doesn't need to read a paragraph. She knows in 15 seconds this is worth inve
 
 > "I don't need the platform to explain the ocean to me. I need it to tell me, quickly and honestly, whether this data is fit for my purpose."
 
+#### Detail Page Needs
+
+When Lena clicks into a dataset, she needs to answer fitness-for-purpose questions quickly:
+
+- **Data type** — Is this CTD, acoustic, biological observation, or current data?
+- **Temporal coverage** — Is the time range long enough? (e.g. TGS 2008–2023, Aker BioMarine 10-year series)
+- **Spatial overlap** — Does the geographic coverage intersect her study area?
+- **FAIR compliance** — Is the data findable, accessible, interoperable, and reusable?
+- **Access method** — How does she access it via Python or R SDK?
+- **Citation history** — Have other researchers cited or used this dataset?
+
+**Use case basis:** TGS data doubled the volume of comparable data in OBIS. Aker BioMarine acoustic data enables scientists to study krill distribution in relation to climate change. Both datasets derive their scientific value from long time series and consistent methodology — details Lena cannot assess without a well-structured detail page.
+
 ---
 
 ## Persona 2: The Industry Data Manager
+
+### Sub-persona: Persona 2A — Marcus Lindqvist (Data User)
 
 **Name**: Marcus Lindqvist
 **Role**: Environmental data manager at an offshore energy company
@@ -96,6 +111,48 @@ Marcus can open his published dataset, see exactly what a first-time visitor wou
 ### His quote
 
 > "We made the decision to share this data openly. Now I need to be able to show my management that someone is actually using it — and that it's easy for them to do so."
+
+#### Detail Page Needs
+
+Marcus evaluates datasets for operational integration. His detail page questions are:
+
+- **Update frequency** — Is the data real-time, near-real-time, or static?
+- **Combinability** — Can this dataset be joined with other datasets in his pipeline?
+- **License** — What are the terms? Is commercial use permitted?
+- **Provider credibility** — Who published this, and are they a trusted source?
+- **Access method** — How does he connect via OGC API or STAC API?
+
+**Use case basis:** Aker BP has shared metocean data since 2021, explicitly to let scientists, engineers, and industry users "explore and combine with other datasets." The CEO statement — "The real value comes from combining datasets" — defines Marcus's primary evaluation criteria. He needs the access panel and provider context immediately, not buried under scroll.
+
+---
+
+## Persona 2B: Erik Hansen
+**Role:** Industry Sustainability Lead (Data Contributor)
+**Organization:** TGS / Aker BioMarine / large marine industry companies
+**Location:** Norway / Global
+
+**Background:**
+Responsible for the company's ESG and ocean data sharing programmes. Wants to contribute company-collected ocean data (acoustic, metocean, biological observation) to the scientific community while gaining FAIR standardisation and increased visibility.
+
+**Goals:**
+- Upload and standardise company data to ODP as FAIR data
+- Gain brand exposure and trust signals from data sharing
+- Support SDG 14 commitments
+- Enable the scientific community to discover and use company data
+
+**Pain points:**
+- The catalog has no clear "How to share your data" entry point (PP-23)
+- Unclear how data contributions will be displayed once uploaded
+- No visibility into who is using the contributed data
+
+**Quote:**
+> "We want to inspire other companies to get involved in sharing data to support SDG14."
+> — Sandy Spørck, TGS
+
+**Behaviour:**
+- Engages with Hub Ocean at the platform level, not just as a data consumer
+- Decision-making is driven by brand and CSR value, not technical capability
+- Needs a clear, low-friction contribution pathway
 
 ---
 
@@ -141,17 +198,68 @@ She can copy the dataset citation and paste it directly into her briefing docume
 
 > "I know the data I need exists somewhere. My problem is I can never get from 'this data exists' to 'I can use this in my work' without needing a data scientist to translate for me."
 
+#### Detail Page Needs
+
+Amara evaluates datasets for policy relevance and citability. Her detail page questions are:
+
+- **SDG alignment** — Which Sustainable Development Goals does this dataset support?
+- **Existing use cases** — Has this data been cited in policy or regulatory contexts?
+- **Citation format** — How does she correctly cite this dataset in a report?
+- **FAIR governance** — Does the data meet open data standards required for policy use?
+- **Provider identity** — Who published this, and what is their institutional standing?
+
+**Use case basis:** TGS explicitly links their data contribution to SDG 14 (Life Below Water). ILIAD emphasizes science-based decision-making and support for legal and regulatory requirements. Wallenius Wilhelmsen's TNFD report requires citable, traceable data sources. Amara cannot serve these needs if SDG tags, citation blocks, and provider context are absent or hard to find.
+
+---
+
+## Persona 4: Sofia Chen
+**Role:** ESG Analyst / Nature Finance
+**Organization:** DNB / Wallenius Wilhelmsen / large financial institutions or shipping companies
+**Location:** Oslo, Norway / Global
+
+**Background:**
+Responsible for the company's nature-related risk assessments and ESG reporting, with requirements to comply with TNFD (Taskforce on Nature-related Financial Disclosures) and CSRD (Corporate Sustainability Reporting Directive). Has limited technical knowledge of marine ecosystems but needs citable, standardised data to support reports.
+
+**Goals:**
+- Assess the proximity of company operations to ocean-sensitive areas (whale migration routes, coral reefs, MPAs)
+- Identify TNFD-aligned, citable data sources
+- Generate quantified nature-related risk metrics
+- Meet CSRD reporting requirements
+
+**Pain points:**
+- Does not know which datasets meet TNFD standards
+- Cannot understand technical field names (PP-15)
+- Cannot find data citations and DOIs (PP-13)
+- Cannot tell which datasets are free tier vs premium tier (PP-21)
+- Needs cross-dataset analysis but the platform provides no guidance (PP-22)
+
+**Quote:**
+> "I need to know where our ships operate relative to sensitive marine habitats — but I can't spend weeks finding and cleaning data just to answer a TNFD disclosure question."
+
+**Behaviour:**
+- Does not write code; requires a no-code interface
+- Prioritises license and citation information
+- Most interested in integrated data products such as "Ocean Sensitive Areas"
+- Needs a report format that can be exported to PDF
+
+**Detail page needs:**
+- Free / Premium tier badge visible without clicking through
+- TNFD / CSRD compliance tags on relevant datasets
+- DOI and citation block prominently displayed
+- Direct link to Hub Ocean for further exploration
+
 ---
 
 ## Cross-Persona Insights
 
 ### The shared frustration
 
-All three personas share one fundamental problem: **they cannot determine fitness-for-purpose without significant effort.**
+All four primary personas share one fundamental problem: **they cannot determine fitness-for-purpose without significant effort.**
 
 - Lena can't quickly verify spatial and temporal coverage
-- Marcus can't confirm his data is presenting correctly to external users
+- Marcus (2A) can't confirm his data is presenting correctly to external users
 - Amara can't understand what the data means without domain knowledge she doesn't have
+- Sofia can't identify which datasets meet TNFD/CSRD standards or are freely available
 
 This is the problem the redesign must solve first.
 
@@ -160,8 +268,10 @@ This is the problem the redesign must solve first.
 | Persona | Primary need | Current gap |
 |---|---|---|
 | Lena (Researcher) | Assess fit quickly, with precision | Information buried in prose and raw metadata |
-| Marcus (Industry) | Verify and validate published data | No publisher-perspective view or usage signals |
+| Marcus 2A (Industry — Data User) | Verify and validate published data | No publisher-perspective view or usage signals |
+| Erik 2B (Industry — Data Contributor) | Clear contribution pathway and visibility | No "share your data" entry point or usage feedback |
 | Amara (Policy) | Understand data in plain language | Platform assumes technical literacy |
+| Sofia (ESG / Nature Finance) | Regulatory-aligned, citable data with tier clarity | No TNFD/CSRD tags, no free vs premium distinction |
 
 ### Acquisition channel implications
 
@@ -170,8 +280,9 @@ These personas are not reachable through the same channels:
 | Persona | Where they discover new tools |
 |---|---|
 | Lena | Conference talks (Ocean Sciences, AGU), preprint citations, lab Slack/Teams |
-| Marcus | Ocean Data Action Coalition working group, industry sustainability reporting frameworks, partner referrals |
+| Marcus / Erik | Ocean Data Action Coalition working group, industry sustainability reporting frameworks, partner referrals |
 | Amara | UN Ocean Decade networks, NGO networks, government briefings, trusted colleagues |
+| Sofia | TNFD/CSRD implementation forums, ESG practitioner networks, financial sector sustainability working groups |
 
 None of these are paid digital advertising channels. All require **trust-based, community-driven discovery** — which directly informs the marketing strategy in `positioning.md`.
 

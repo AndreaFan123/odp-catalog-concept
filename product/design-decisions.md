@@ -2,7 +2,7 @@
 
 > **Document status**: Draft v1.0  
 > **Agent**: product-strategist  
-> **Last updated**: 2026-04-05 (DD-13–DD-16 added)  
+> **Last updated**: 2026-04-05 (DD-17–DD-26 added)  
 > **References**: research/pain-points.md, research/competitive.md
 
 ---
@@ -141,138 +141,416 @@ Each decision is tied to a specific pain point (PP-XX) from `research/pain-point
 
 ---
 
-## DD-09: Filter 透過 card 內容引導發現，而非側欄說明
+## DD-09: Filter discovery driven by card content, not sidebar instructions
 
 **Pain point addressed**: PP-12
-**Persona**: 所有三個 persona
-**Context**: 現有 ODP 的 filter 側欄對使用者不透明。使用者需要主動發現 filter 的存在才能使用它，導致大多數人只用關鍵字搜尋。
+**Persona**: All three personas
+**Context**: The existing ODP filter sidebar is opaque to users. Users must actively discover that filters exist before they can use them, which means most people only use keyword search.
 **Options considered**:
-- A: 在 filter 側欄加上說明文字和操作提示
-- B: 把地區和時間整合進搜尋框 placeholder
-- C: 讓 dataset card 上的 region label、temporal range、keywords 都是可點擊的 filter 觸發器——使用者從內容本身發現篩選的存在
-**Decision**: Option C，搭配搜尋框下方的 active filter chips 顯示目前已套用的篩選條件
-**Rationale**: 符合 DD-06（keywords 互動）的一致邏輯。讓資料引導發現，而非依賴 UI 說明文字。Lena 點擊「Southern Ocean」region label 就能看到所有南極海資料；Amara 點擊「CC BY 4.0」badge 就能篩選出她可以引用的資料集。這個模式對所有技術程度的使用者都直覺。
-**Trade-offs**: 需要 URL-based filter state 支援多個同時啟用的 filter（keyword + region + license + temporal）。TanStack Router 的 validateSearch 可以處理這個需求。
+- A: Add explanatory text and usage prompts to the filter sidebar
+- B: Integrate region and date filtering into the search box placeholder
+- C: Make the region label, temporal range, and keywords on each dataset card into clickable filter triggers — users discover filtering from the content itself
+**Decision**: Option C, combined with active filter chips below the search box to show currently applied filters
+**Rationale**: Consistent with the logic of DD-06 (keyword interactivity). Let the data guide discovery rather than relying on UI instructional text. Lena clicking the "Southern Ocean" region label immediately sees all Southern Ocean datasets; Amara clicking the "CC BY 4.0" badge filters to datasets she can cite. This pattern is intuitive regardless of a user's technical level.
+**Trade-offs**: Requires URL-based filter state to support multiple simultaneous filters (keyword + region + license + temporal). TanStack Router's validateSearch handles this requirement.
 
 ---
 
 ## DD-10: Spotify-inspired UX as core design metaphor
 
-**Pain point addressed**: PP-12（filter 不透明）、PP-01（資訊層級）
-**Persona**: 所有三個 persona
-**Context**: Hub Ocean 官方將自己定位為「the Spotify of ocean data」。我們的 UI 應該真正體現這個定位，而不只是一個資料庫列表。
+**Pain point addressed**: PP-12 (opaque filters), PP-01 (information hierarchy)
+**Persona**: All three personas
+**Context**: Hub Ocean officially positions itself as "the Spotify of ocean data." The UI should genuinely embody this positioning rather than remaining a database list.
 **Options considered**:
-- A: 維持現有列表式 UI，僅改善資訊層級
-- B: 採用 dashboard 風格（Netflix/YouTube 格狀分類）
-- C: 採用 Spotify desktop app 的 UX 架構：左側固定 sidebar + 深色主題 base + light/dark mode toggle + 正方形 card 封面
+- A: Keep the existing list-based UI and only improve information hierarchy
+- B: Adopt a dashboard layout (Netflix/YouTube-style grid with categories)
+- C: Adopt the Spotify desktop app UX architecture: fixed left sidebar + dark-themed base + light/dark mode toggle + square card covers
 
 **Decision**: Option C
-**Rationale**: 深色背景讓 SpatialThumbnail 的 cyan bbox highlight 成為視覺主角，直接解決 PP-02 的空間可見性問題。Spotify 模式的左側 sidebar 讓 category navigation 永遠可見，解決 PP-12 的 filter 不透明問題——用戶不需要「發現」filter 的存在，它就在那裡。正方形封面圖強制每個 dataset 有一個視覺身份，而不是一排文字。Light/dark mode toggle 讓不同使用情境（實驗室螢幕 vs 簡報環境）都有最佳閱讀體驗。
-**Trade-offs**: 深色主題設計在 a11y 上需要更嚴格的對比度審查。所有元件需通過 `a11y-reviewer` 在深色和淺色兩種模式下的審核。
+**Rationale**: A dark background makes the SpatialThumbnail's cyan bbox highlight the visual focus, directly addressing the spatial visibility problem in PP-02. The Spotify-style left sidebar keeps category navigation permanently visible, resolving the filter opacity problem in PP-12 — users do not need to "discover" that filters exist; they are always there. Square cover images give each dataset a visual identity rather than reducing it to a row of text. A light/dark mode toggle provides an optimal reading experience across different usage contexts (lab monitors vs. presentation environments).
+**Trade-offs**: Dark-theme design requires stricter contrast review for accessibility. All components must pass `a11y-reviewer` sign-off in both dark and light modes.
 
 ---
 
-## DD-11: "Play" button — 讓用戶體驗資料而非只查看資料
+## DD-11: "Play" button — letting users experience data rather than just viewing it
 
-**Pain point addressed**: PP-02（空間覆蓋不直覺）、PP-01（資訊層級）
-**Persona**: Amara（Policy），Lena（Researcher）
-**Context**: Spotify 的核心 UX 洞察是「試聽」——讓用戶在不需要理解技術細節的情況下體驗內容。ODP 可以做同樣的事：讓用戶在不下載資料的情況下「感受」dataset 的內容。
+**Pain point addressed**: PP-02 (spatial coverage not immediately intuitive), PP-01 (information hierarchy)
+**Persona**: Amara (Policy), Lena (Researcher)
+**Context**: Spotify's core UX insight is the "preview" — letting users experience content without needing to understand the technical details first. ODP can do the same: let users "feel" what a dataset contains without downloading it.
 **Options considered**:
-- A: 只顯示靜態地圖和數字摘要
-- B: 連結到外部資料視覺化工具
-- C: 在 dataset card 加入「Play」按鈕，觸發底部 playbar 和對應的資料動畫視覺
+- A: Display only a static map and numeric summary
+- B: Link out to an external data visualization tool
+- C: Add a "Play" button to each dataset card that triggers a bottom playbar and a corresponding animated data visualization
 
-**Decision**: Option C（Portfolio scope 先實作靜態 Playbar UI + 2 種動畫類型）
-**Rationale**: 把「資料探索」變成「資料體驗」，讓非技術用戶能直覺理解一個 dataset 代表什麼。動畫邏輯依資料類型而異：時間序列資料 → 波形動畫（像音波視覺化）；地理覆蓋資料 → 地圖上的資料點逐漸出現；聲學資料（如 Aker BioMarine）→ 頻譜動畫。底部 playbar 顯示 dataset 名稱、覆蓋範圍、時間軸。這是目前所有海洋資料平台都沒有做的差異化功能。
-**Trade-offs**: 需要針對每種資料類型設計不同的動畫邏輯。Portfolio scope 先實作 2 種：時間序列波形（WaveAnimation）+ 地理點資料（MapAnimation）。聲學頻譜動畫列入 production scope。
+**Decision**: Option C (Portfolio scope implements static Playbar UI + 2 animation types first)
+**Rationale**: Transforms "data exploration" into "data experience," allowing non-technical users to intuitively understand what a dataset represents. Animation logic varies by data type: time-series data → waveform animation (like an audio waveform visualizer); geographic coverage data → data points appearing progressively on a map; acoustic data (e.g., Aker BioMarine) → spectrogram animation. The bottom playbar displays the dataset name, coverage, and timeline. This is a differentiating feature that no current ocean data platform offers.
+**Trade-offs**: Requires designing different animation logic for each data type. Portfolio scope implements 2 types first: time-series waveform (WaveAnimation) + geographic point data (MapAnimation). Acoustic spectrogram animation is deferred to production scope.
 
 ---
 
-## DD-12: Onboarding 問卷 → 個人化 catalog
+## DD-12: Onboarding survey → personalized catalog
 
-**Pain point addressed**: PP-12（filter 不透明）
-**Persona**: 新用戶（所有三個 persona 的首次使用狀態）
-**Context**: 新用戶到達 catalog 時面對 40+ 個 dataset，不知道從何開始。現有平台假設用戶知道自己要找什麼。
+**Pain point addressed**: PP-12 (opaque filters)
+**Persona**: New users (the first-visit state of all three personas)
+**Context**: New users arrive at the catalog facing 40+ datasets with no clear starting point. The existing platform assumes users already know what they are looking for.
 **Options considered**:
-- A: 顯示 "Getting Started" 說明頁面
-- B: 預設排序改為「最多下載」
-- C: 首次訪問顯示 3 個問題的 onboarding modal，根據答案預套用 filter 並記憶偏好
+- A: Display a "Getting Started" help page
+- B: Change the default sort order to "most downloaded"
+- C: Show a 3-question onboarding modal on first visit that pre-applies filters based on answers and persists user preferences
 
-**Decision**: Option C（Portfolio scope 先實作 modal + localStorage 偏好儲存）
-**Rationale**: 三個問題足以覆蓋三個 persona 的主要用途差異：「你的主要目的是什麼？」（研究 / 政策 / 技術整合）、「你最感興趣的海洋區域？」（全球 / 特定區域）、「你需要可免費商業使用的授權嗎？」（是 / 不確定 / 否）。答案直接對應到現有的 filter 系統，無需額外後端支援。localStorage 偏好儲存讓回訪用戶不需要重新回答。這個模式讓 catalog 從「資料庫」變成「個人化助理」。
-**Trade-offs**: Modal 必須可以 skip（不強迫），且 skip 後要能從 UI 重新觸發偏好設定。Portfolio scope 不含帳號系統，偏好僅存在 localStorage（清除瀏覽器資料後重置）。
+**Decision**: Option C (Portfolio scope implements modal + localStorage preference persistence first)
+**Rationale**: Three questions are sufficient to cover the primary use-case differences across all three personas: "What is your primary purpose?" (research / policy / technical integration), "Which ocean region interests you most?" (global / specific region), and "Do you need a license that permits free commercial use?" (yes / unsure / no). The answers map directly to the existing filter system with no additional backend required. localStorage preference persistence means returning users do not need to answer again. This pattern transforms the catalog from a "database" into a "personalized assistant."
+**Trade-offs**: The modal must be skippable (non-forced), and preferences must be retrievable from the UI after skipping. Portfolio scope does not include an account system; preferences live only in localStorage and reset when browser data is cleared.
 
 ---
 
-## DD-13: DatasetCard 移除地圖縮圖，改用 region badge
+## DD-13: DatasetCard removes map thumbnail, uses region badge instead
 
-**Pain point addressed**: PP-02（空間覆蓋不直覺）
+**Pain point addressed**: PP-02 (spatial coverage not immediately intuitive)
 **Persona**: Lena, Amara
-**Context**: SpatialThumbnail 在 card 小尺寸下大陸形狀辨識度接近零，無法傳遞任何地理資訊，反而造成視覺雜訊。
+**Context**: At the small card size, the SpatialThumbnail's continent shapes are nearly unrecognizable. The thumbnail fails to convey any geographic information and instead adds visual noise.
 **Options considered**:
-- A: 維持地圖縮圖，加大 card 尺寸
-- B: 移除地圖縮圖，改用純文字 region badge（如「Southern Ocean」「North Sea」「Global」）
-- C: 用色塊代替地圖（海洋藍色系依 region 分色）
+- A: Keep the map thumbnail but increase card size
+- B: Remove the map thumbnail and use a plain-text region badge (e.g., "Southern Ocean", "North Sea", "Global")
+- C: Replace the map with a color block, using ocean-blue hues keyed by region
 
 **Decision**: Option B
-**Rationale**: 文字 region label 比模糊的地圖縮圖更能快速傳遞地理資訊。這與 GBIF competitive analysis 的結論一致（research/competitive.md）：GBIF 用文字 region filter，不用縮圖。地圖體驗保留給 detail page，在大尺寸下才有意義。Amara 看到「Southern Ocean」立刻理解；看到一個模糊地圖矩形，反而需要思考。
-**Trade-offs**: 失去視覺上的地理直覺，但換來更清晰的資訊傳遞和更快的 card 渲染（移除 SVG 計算）。
+**Rationale**: A text region label communicates geographic information faster and more reliably than a blurry map thumbnail. This aligns with the conclusion from the GBIF competitive analysis (research/competitive.md): GBIF uses text-based region filters, not thumbnails. The map experience is reserved for the detail page, where a larger size makes it meaningful. Amara immediately understands "Southern Ocean"; a fuzzy map rectangle requires interpretation.
+**Trade-offs**: Loses the visual geographic affordance, but gains cleaner information delivery and faster card rendering (removes SVG calculation).
 
 ---
 
-## DD-14: Detail page 使用平面地圖（MapLibre GL JS）
+## DD-14: Detail page uses a flat map (MapLibre GL JS)
 
-**Pain point addressed**: PP-02（空間覆蓋不直覺）
+**Pain point addressed**: PP-02 (spatial coverage not immediately intuitive)
 **Persona**: Lena, Marcus
-**Context**: Detail page 需要一個高品質的地圖來展示 dataset 的 spatial extent，讓用戶能評估地理覆蓋範圍。
+**Context**: The detail page requires a high-quality map to display a dataset's spatial extent so users can assess geographic coverage.
 **Options considered**:
-- A: 使用 3D 地球（globe view）
-- B: 使用平面地圖（MapLibre GL JS + OpenStreetMap tiles）
-- C: 放大版 SpatialThumbnail SVG
+- A: Use a 3D globe view
+- B: Use a flat map (MapLibre GL JS + OpenStreetMap tiles)
+- C: An enlarged version of the SpatialThumbnail SVG
 
 **Decision**: Option B — MapLibre GL JS flat map
-**Rationale**: 平面地圖直接回答用戶問題：「這份資料覆蓋了哪裡？」bbox highlight 來自 STAC 正確的 spatial extent，不是原始 geometry（解決 PP-02）。MapLibre 是免費、開源，不需要 API key。Option C（大型 SVG）缺乏細節（海岸線、島嶼、國家邊界），無法支援 detail page 的使用情境。
-**Trade-offs**: 失去 3D 地球的視覺震撼感，換來準確且可辨識的空間資訊。MapLibre 需要 lazy loading 避免影響 catalog page 性能。
+**Rationale**: A flat map directly answers the user's question: "Where does this data cover?" The bbox highlight comes from the STAC spatial extent, not raw geometry — this resolves PP-02. MapLibre is free and open source with no API key required. Option C (a large SVG) lacks detail (coastlines, islands, country borders) and cannot serve the detail page use case.
+**Trade-offs**: Loses the visual impact of a 3D globe, but gains accurate and legible spatial information. MapLibre requires lazy loading to avoid affecting catalog page performance.
 
 ---
 
-## DD-15: Light mode 優先，dark mode 之後補
+## DD-15: Light mode first, dark mode deferred
 
-**Pain point addressed**: （設計語言對齊，非直接 user pain point）
+**Pain point addressed**: (Design language alignment — not a direct user pain point)
 **Persona**: Hub Ocean hiring team
-**Context**: 原本考慮跟 Spotify 一樣使用深色主題（DD-10），但 Hub Ocean platform 實際是 light mode。深色主題在 a11y 審查中需要額外的對比度工作。
+**Context**: The original plan was to use a dark theme matching Spotify (DD-10), but the Hub Ocean platform itself uses light mode. Dark-theme designs require additional contrast work in accessibility review.
 **Options considered**:
-- A: 全深色主題（跟 Spotify 對齊）
-- B: 以 light mode 為主，sidebar 維持深紫（Hub Ocean brand color #200A3A）
-- C: 用戶可切換 light/dark
+- A: Full dark theme (aligned with Spotify)
+- B: Light mode as primary, with the sidebar retaining the deep purple brand color (#200A3A)
+- C: User-switchable light/dark mode
 
-**Decision**: Option B — Light mode 優先
-**Rationale**: 對齊 Hub Ocean platform 實際設計語言，同時 sidebar 的深色（#200A3A）保留品牌識別度。Light mode 更容易通過 WCAG AA 審查。Dark mode 作為之後的功能補充（列入 Roadmap Phase 5 的 Should 項目）。
-**Trade-offs**: Spotify 定位的視覺震撼感降低，但設計的可信度和可維護性提升。
+**Decision**: Option B — Light mode first
+**Rationale**: Aligns with the actual design language of the Hub Ocean platform while the sidebar's dark background (#200A3A) preserves brand recognition. Light mode is easier to pass WCAG AA review. Dark mode is deferred as a follow-up feature (listed as a Should item in Roadmap Phase 5).
+**Trade-offs**: Reduces the visual impact of the Spotify metaphor, but improves design credibility and maintainability.
 
 ---
 
-## DD-16: Type filter 改為 Collection 關聯顯示
+## DD-16: Type filter replaced by Collection relationship display
 
-**Pain point addressed**: PP-11（無相關 dataset 發現機制）
-**Persona**: Lena（Researcher），Marcus（Publisher）
-**Context**: Hub Ocean 現有平台的 Type filter 提供「Dataset / Data Collection」checkbox，要求用戶理解平台的內部架構分類。這是系統概念洩漏到 UI：一般用戶不需要也不應該需要理解「STAC Collection」是什麼，才能找到他們需要的資料。
+**Pain point addressed**: PP-11 (no related dataset discovery mechanism)
+**Persona**: Lena (Researcher), Marcus (Publisher)
+**Context**: The Hub Ocean platform's current Type filter provides a "Dataset / Data Collection" checkbox that requires users to understand the platform's internal architectural categories. This is system-concept leakage into the UI: ordinary users do not need to — and should not need to — understand what a "STAC Collection" is in order to find the data they need.
 
-然而，Collection 本身有真實的用戶價值，只是應該以不同方式呈現：
-- Lena 找到一個相關 dataset 後，自然想知道「同一個 provider 還有哪些類似資料？」
-- Marcus 發布資料時，有意識地把相關 dataset 組織成 Collection，希望用戶能一次發現全部
+However, Collections have genuine user value; they simply need to be surfaced differently:
+- After Lena finds a relevant dataset, she naturally wants to know: "What other similar data does this provider have?"
+- When Marcus publishes data, he deliberately organizes related datasets into a Collection and wants users to discover all of them together.
 
 **Options considered**:
-- A: 維持現有 checkbox filter（Dataset / Data Collection）
-- B: 完全移除 type 分類概念，只顯示扁平 dataset 列表
-- C: 移除 filter checkbox，改為在 card 和 detail page 上顯示「Part of Collection」關聯入口，讓用戶從內容發現關聯，而非從 filter 架構
+- A: Keep the existing checkbox filter (Dataset / Data Collection)
+- B: Remove the type classification concept entirely and show only a flat dataset list
+- C: Remove the filter checkbox; instead show a "Part of Collection" relationship entry point on the card and detail page, letting users discover related content from the content itself rather than from a filter taxonomy
 
 **Decision**: Option C
-**Rationale**: Option A 要求用戶先理解系統架構才能篩選，這是 UI anti-pattern——filter 應該回答「我想找什麼」，不是「這份資料屬於哪個內部類型」。Option B 完全放棄 Collection 的價值。Option C 保留了 Collection 作為「發現路徑」的核心功能，同時移除了「理解分類架構」這個不必要的認知負擔。
+**Rationale**: Option A requires users to understand the system architecture before they can filter — this is a UI anti-pattern. Filters should answer "what do I want to find," not "which internal type does this data belong to?" Option B abandons the value of Collections entirely. Option C preserves the core function of Collections as a discovery path while removing the unnecessary cognitive burden of understanding the classification architecture.
 
-具體實作：在 dataset card 右下角顯示「Part of [Collection Name]」的小標籤，點擊後顯示該 collection 的其他 dataset。這直接解決 PP-11（無相關 dataset 發現機制）：用戶從一個 dataset 自然滑向同一個 Collection 的其他成員，不需要理解背後的架構。
+Concrete implementation: a small "Part of [Collection Name]" tag in the lower-right corner of the dataset card; clicking it surfaces the other datasets in that collection. This directly addresses PP-11 (no related dataset discovery mechanism): users naturally move from one dataset to the other members of the same Collection without needing to understand the underlying architecture.
 
-**Trade-offs**: 需要 STAC `links` 欄位裡的 collection 關聯資料正確存在。Portfolio scope 先顯示靜態文字標籤（「Part of [collection title]」），不做完整的 collection 瀏覽頁面。Collection 瀏覽頁列入 roadmap medium-term（現有 Collection-level pages 條目）。
+**Trade-offs**: Requires that the collection relationship data in the STAC `links` field is correctly populated. Portfolio scope shows a static text label ("Part of [collection title]") without building a full collection browsing page. The collection browsing page is deferred to roadmap medium-term (existing Collection-level pages entry).
+
+**2026-04-06 final confirmation:**
+Three endpoints tested for parent collection data — all returned negative:
+- `STAC API links` — no `collection` rel found across all 38 collections
+- `/api/public/catalog/v1/dataset/{uuid}` — 404, not publicly accessible
+- `/api/public/catalog/v1/jsonld/?uuid={uuid}` — 200, but `isPartOf` is `undefined`
+
+DD-16's "Part of Collection" feature cannot be implemented within the public API surface. The detail page uses "More from this provider" (DD-21) as the replacement discovery mechanism.
+
+---
+
+## DD-17: Two-column layout for detail page
+
+**Pain point addressed**: PP-05, PP-17
+**Persona**: Lena, Marcus, Amara
+**Status**: Decided
+
+**Context**: Hub Ocean's current detail page is a single-column linear layout. Users must scroll past the map and description to reach access methods and citation — assuming they have the patience to read sequentially.
+
+**Decision**: Adopt a two-column layout for the dataset detail page:
+- **Left column (primary content)**: Map + description + data types + SDG tags + keywords + citation
+- **Right column (fixed sidebar)**: Key stats + Access panel + Provider card
+
+**Rationale**: The two-column layout makes geographic coverage and access methods simultaneously visible without scrolling. This directly addresses the quick-assessment needs of all three personas. Lena needs spatial and temporal fit at a glance. Marcus needs the access panel immediately. Amara needs provider context and citation without hunting.
+
+---
+
+## DD-18: Access panel always visible (no accordion)
+
+**Pain point addressed**: PP-05, PP-17
+**Persona**: Marcus, Lena
+**Status**: Decided
+
+**Context**: Hub Ocean collapses the "Use Dataset" section by default. This hides the most important action — accessing the data — behind a disclosure widget.
+
+**Decision**: The access panel is always expanded and displays all access methods:
+- STAC API endpoint [Copy]
+- OGC API endpoint [Copy]
+- Python SDK [↗ docs]
+- R SDK [↗ docs]
+- Open in Workspace [↗]
+
+**Rationale**: API access is the core value proposition of the platform. TGS, Aker BioMarine, and Aker BP use cases all describe API-based data sharing as the primary delivery mechanism. Hiding this behind an accordion contradicts the platform's stated mission of making ocean data accessible.
+
+---
+
+## DD-19: SDG tags derived from keywords
+
+**Pain point addressed**: PP-18
+**Persona**: Amara
+**Status**: Decided
+
+**Context**: Multiple use cases cite SDG 14 (Life Below Water) as the motivation for data sharing. The current detail page has no SDG-related tags or links.
+
+**Decision**: Derive SDG tags from the dataset's `keywords` field. If keywords include terms such as "SDG", "SDG14", "sustainable", "life below water", or "FAIR", display matching tags:
+- 🌊 SDG 14: Life Below Water
+- 📊 FAIR Data Standard
+
+Display location: below the description, above general keywords.
+
+**Rationale**: TGS, ILIAD, and Wallenius Wilhelmsen TNFD report all explicitly cite SDG 14 alignment as a driver for data publication. Amara requires SDG-mapped data for policy reporting. Keyword derivation is a pragmatic zero-configuration approach — no new metadata field required from providers.
+
+---
+
+## DD-20: Provider card with trust signals
+
+**Pain point addressed**: PP-19
+**Persona**: Marcus, Amara
+**Status**: Decided
+
+**Context**: Provider names (Aker BP, TGS, GEBCO) function as trust signals, but the current detail page renders only a plain text string with no supporting context.
+
+**Decision**: The Provider section on the detail page displays:
+- Provider name (bold)
+- Provider website link [↗]
+- Number of datasets from this provider
+- Contact link (if available in STAC metadata)
+
+Provider logo is omitted unless a reliable logo source is available — avoid broken images.
+
+**Rationale**: Marcus requires credibility assessment before approving data integration. Amara requires institutional context for citation in policy documents. Both needs are served by surfacing the provider's public identity, not just their name.
+
+---
+
+## DD-21: Related datasets section
+
+**Pain point addressed**: PP-20
+**Persona**: Lena, Marcus
+**Status**: Decided
+
+**Context**: The Aker BP CEO states: "The real value comes from combining datasets." TGS combines marine biota with oceanographic data. ILIAD's core value is data fusion. The current platform offers no cross-dataset discovery path from a detail page.
+
+**Decision**: Display a Related Datasets section at the bottom of the detail page. Priority order:
+1. Other datasets from the same provider
+2. Other datasets in the same category
+3. Other datasets covering the same geographic region
+
+Limit to 6 cards maximum. Render using the same DatasetCard component as the catalog grid.
+
+**Rationale**: Users who reach a detail page have the highest intent of any catalog interaction. Offering related datasets at this moment extends discovery and surfaces the combinatorial value that multiple use cases identify as the platform's core differentiator.
+
+---
+
+## DD-22: Data preview stats in right column
+
+**Pain points addressed**: PP-01, PP-15
+**Personas**: Lena, Marcus
+**Context**: Hub Ocean's tabular data preview is buried at the bottom of the detail page. Users must scroll a long way to see data scale (size, columns, rows). Yet these three numbers are the key signals Lena and Marcus use to judge fit-for-purpose.
+**Decision**: Add a Data preview section below the Access panel in the detail page right column:
+
+- Size (MB / GB)
+- Columns (number of fields)
+- Rows (number of records)
+- [Explore table ↗] (link to Hub Ocean)
+- [Explore map ↗] (link to Hub Ocean)
+
+We do not implement our own tabular preview — we link directly to the Hub Ocean original page.
+
+**Rationale**: Data scale is a rapid-judgment signal:
+- 750.9 MB + 19.7K rows → this is real data, not an empty dataset
+- 87 columns → the data is rich
+
+Users should not need to scroll to decide whether it's worth exploring further.
+
+**Trade-offs**: The STAC API does not directly expose size/columns/rows. These must be parsed from the `description` field, or the section displays a fallback: "Available on Hub Ocean".
+
+**2026-04-06 confirmation:**
+`tabular_metadata` (containing `num_rows`, `total_byte_size`, `columns`) exists only in the Catalog API at `/api/public/catalog/v1/dataset/{uuid}`. This endpoint returns 404 and is not publicly accessible. Rows, columns, and byte size cannot be retrieved from any public API.
+
+Detail page implementation adjusted: the Data preview panel shows "Explore the full dataset on Hub Ocean" with [Explore table ↗] and [Explore map ↗] buttons linking to the STAC `alternate` URL. The panel is conditionally displayed only when the `description` field contains size-hint keywords (rows, columns, MB, GB, records).
+
+---
+
+## DD-23: Distinction between Explore map and detail page map
+
+**Pain point addressed**: PP-14
+**Persona**: Lena
+**Context**: Hub Ocean surfaces two maps:
+1. The 3D globe at the top of the detail page — shows bbox spatial coverage
+2. The Explore map (further down) — shows actual data point locations
+
+Users do not understand the difference and assume both display the same information.
+
+**Decision**: Our detail page implements a single map only — a flat MapLibre map showing the bbox highlight, clearly labelled "Spatial coverage". Exploration of actual data points links out to Hub Ocean's Explore map.
+
+Below the map, add a one-line explanation:
+> "Showing spatial coverage extent. Explore actual data points on Hub Ocean ↗"
+
+**Rationale**: Avoid conflating two different kinds of geographic information. Each visual element should communicate exactly one thing clearly.
+
+---
+
+## DD-24: Free vs premium tier badge
+
+**Pain point addressed:** PP-21
+**Personas:** Sofia, Marcus A
+
+**Context:**
+ODP hosts both free (publicly available) and premium (contact Hub Ocean) datasets. The current catalog does not distinguish between the two. Sofia and Marcus A cannot tell whether a dataset requires payment without opening it.
+
+**Decision:**
+Add a tier badge to dataset cards and the detail page:
+
+- **Free** — publicly available, no account required
+- **Premium** — contact Hub Ocean to access
+
+**Derivation logic (from STAC metadata):**
+- `license: "other"` + `keywords` includes `"premium"` → Premium tier
+- All other datasets → Free tier
+
+**Rationale:**
+Sofia should not need to click through to each dataset to discover it is gated. The tier badge surfaces this information at the card level, reducing wasted exploration time.
+
+**Trade-offs:**
+The derivation logic is heuristic — it depends on Hub Ocean consistently tagging premium datasets with the `"premium"` keyword. A fallback label ("Contact Hub Ocean") should be shown when classification is ambiguous.
+
+**2026-04-06 supplementary finding:**
+The JSON-LD endpoint (`/api/public/catalog/v1/jsonld/?uuid={uuid}`) exposes an `isAccessibleForFree` field that could serve as a secondary signal for free/premium classification. However, in current testing all datasets return `isAccessibleForFree: true`, which means the field does not yet differentiate premium datasets. The `license` field heuristic remains the primary derivation method until Hub Ocean populates `isAccessibleForFree` with accurate values for premium-gated datasets.
+
+---
+
+## DD-25: "3% Problem" narrative on the homepage
+
+**Context:**
+Hub Ocean's core narrative is that only 3% of publicly available ocean biodiversity data comes from industry. This is more emotionally resonant than "38 datasets" and immediately communicates the platform's mission.
+
+**Decision:**
+Replace the homepage Numbers section with three statistics:
+
+| Number | Label |
+|--------|-------|
+| 3% | Of ocean biodiversity data comes from industry |
+| 38 | Public datasets and growing |
+| 0 | Login required |
+
+**Rationale:**
+"3%" is the number that explains *why this platform exists* in a single glance. It speaks directly to Sofia (ESG — why ocean data matters to finance) and Erik (data contributor — why sharing matters). "0 login required" addresses the access friction pain point (PP-07) at the top of the funnel.
+
+---
+
+## DD-26: Four persona cards on the homepage
+
+**Persona:** Sofia (new)
+
+**Context:**
+The homepage "Who uses ODP" section currently features three persona cards (Researchers, Industry, Policy). The addition of Persona 4 (Sofia — ESG & Finance) warrants a fourth card.
+
+**Decision:**
+Expand the "Who uses ODP" section from 3 to 4 cards:
+
+| Card | Headline | Body | CTA |
+|------|----------|------|-----|
+| Researchers | Ocean Scientists & Researchers | Access validated, open ocean data for climate, biodiversity, and ecosystem research. | Explore datasets → |
+| Industry (User) | Industry Data Teams | Find metocean, acoustic, and environmental data to support operations and compliance. | Browse by category → |
+| Policy | Policy & Conservation | Track ocean health indicators and support evidence-based environmental policy. | View collections → |
+| ESG & Finance *(new)* | ESG Analysts & Finance Teams | Assess nature-related risks with TNFD-aligned ocean data. Map operations against sensitive marine habitats. | Explore nature risk data → `/catalog?category=mpa` |
+
+---
+
+## DD-27: Persona routing as primary navigation
+
+**Pain points addressed:** PP-12, PP-18, PP-21, PP-22, PP-23
+**Personas:** All four (Lena, Marcus 2A, Erik 2B, Sofia)
+
+**Context:**
+Hub Ocean's most fundamental IA problem is that persuasion and utility are conflated, with no differentiated entry points for different personas. After entering the catalog, 38 datasets are presented in a flat list with no task-oriented guidance.
+
+**IA analysis basis (research/ia-analysis.md):**
+The Hub Ocean marketing site's Sectors structure has no landing page — the four audience segments have no differentiated entry points. Use Cases and Sectors exist as parallel nav items rather than a hierarchical claim-to-proof relationship.
+
+Our platform persona routing resolves at the product level what the marketing site does not: after entering the catalog, users are routed toward the right data based on their audience identity, without needing to reconstruct that identity from scratch.
+
+This is the portfolio's strongest design argument: **we are not only improving the catalog's visual design; we are addressing the most critical break in the user's journey from marketing site to platform — the moment when a user arrives at the catalog with a clear audience identity but no corresponding entry point.**
+
+**Decision:**
+The homepage's core function is persona routing, not feature description. Four persona cards, each linking directly to a corresponding catalog filter or external resource:
+
+| Persona card | Destination | Key message |
+|---|---|---|
+| Researchers | `/catalog?category=biodiversity` | FAIR data, spatial fit, temporal range |
+| Industry (user) | `/catalog?category=industry` | Metocean, acoustic, ESG reporting |
+| ESG & Finance | `/catalog?category=mpa` | TNFD compliance, nature-sensitive areas, CSRD reporting |
+| Industry (contributor) | `https://app.hubocean.earth` (external) | Upload data, FAIR standardisation, SDG 14 commitment |
+
+**Rationale:**
+Get the right person to the right entry point within 10 seconds. This directly addresses Hub Ocean's most fundamental IA problem: critical information buried at the second and third level, with no persona routing.
+
+**Trade-offs:**
+Users must be able to self-identify their persona quickly. Card labels must be clear enough that users know which to choose. Four cards risk indecision if the labels are ambiguous — copy must be tested.
+
+---
+
+## DD-28: Homepage is task-oriented, not feature-oriented
+
+**Context:**
+Hub Ocean's landing page has approximately 15 sections covering feature descriptions, mission, use cases, news, and more — but lacks a design that starts from user tasks.
+
+**Decision:**
+Our homepage answers a single question: "What do you want to do here?"
+
+Five sections, each serving that question:
+
+| Section | Purpose |
+|---|---|
+| Hero | "What is this" (one sentence) |
+| Numbers | "Why it matters" (3% problem) |
+| Browse by category | "What data is available" |
+| Persona routing | "Where should you start" |
+| Footer | "This is a concept, not an official product" |
+
+Deliberately excluded:
+- How it works (users are already on the platform)
+- Mission statement (belongs on a marketing page)
+- Latest news (out of scope)
+- Partner logos (out of scope)
+
+**Rationale:**
+Restraint is a signal of design quality. 15 sections dilute the weight of every message. 5 sections give each message enough room to breathe.
 
 ---
 

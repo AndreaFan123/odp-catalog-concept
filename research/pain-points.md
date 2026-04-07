@@ -1,8 +1,8 @@
 # Pain Points — Ocean Data Platform
 
-> **Document status**: Draft v1.0  
-> **Agent**: research-analyst  
-> **Last updated**: 2026-04-03  
+> **Document status**: Draft v1.1
+> **Agent**: research-analyst
+> **Last updated**: 2026-04-05
 > **Source**: Current ODP dataset detail UI (screenshot, April 2026) + STAC API response analysis  
 > **Informs**: product/problem-statement.md, product/design-decisions.md, design/style-guide.md
 
@@ -130,53 +130,146 @@ Pain points are organized by severity. Each entry maps to at least one persona f
 
 ---
 
-### PP-12: Filter 工具的操作方式和語意不明確
+### PP-12: Filter tool interaction and semantics are unclear
 
-**Persona**: 所有三個 persona（Lena、Marcus、Amara）
-**UI Element**: Catalog page — 左側 Filter 側欄（地球互動地圖、Date Range 輸入框）
-**User Impact**: 使用者預設只使用關鍵字搜尋，因為地球地圖看起來像裝飾元素而非互動工具，日期輸入框的用途不明確（是資料時間範圍還是發布日期？）。大多數使用者不會發現地點篩選和時間篩選的存在，直到主動嘗試——這代表他們的搜尋結果永遠是未經地理和時間篩選的完整列表。
-**Evidence**: 現有 ODP catalog UI 截圖（2026-04-03）顯示：地球地圖無游標提示、無操作說明、無視覺 affordance；Date Range 僅顯示 yyyy/mm/dd 空白輸入框，無說明這是篩選資料的時間範圍。
-**Root cause**: Progressive disclosure 實作不完整——功能存在但對使用者不透明，沒有任何線索提示「這裡還有更多篩選工具」。
+**Persona**: All three personas (Lena, Marcus, Amara)
+**UI Element**: Catalog page — left-side filter sidebar (interactive globe map, Date Range inputs)
+**User Impact**: Users default to keyword search only because the globe map looks like a decorative element rather than an interactive tool, and the purpose of the date inputs is ambiguous (does this filter by data time range or publication date?). Most users never discover that location and time filters exist unless they actively investigate — meaning their search results are always the full unfiltered list without geographic or temporal constraints applied.
+**Evidence**: The existing ODP catalog UI screenshot (2026-04-03) shows: the globe map has no cursor hint, no usage instructions, and no visual affordance; the Date Range shows only blank yyyy/mm/dd input fields with no indication that this filters the dataset time range.
+**Root cause**: Progressive disclosure is incompletely implemented — the functionality exists but is invisible to users, with no cues indicating "there are more filtering tools here."
 **Severity**: High
 
 ---
 
-### PP-13: Citation 實作不一致
+### PP-13: Citation implementation is inconsistent
 
 **Persona**: Lena (Researcher), Amara (Policy), Sofia (ESG)
-**UI Element**: Dataset detail page — Citation 區塊
-**User Impact**: Citation 區塊在部分 dataset 存在（如 North Pacific whale distribution dataset），但在其他 dataset 完全缺席。格式和位置也不統一——使用者無法預期在哪裡找到引用資訊，每次都需要重新尋找。對 Amara 和 Sofia 來說，找不到 citation 等於這份資料無法使用——她們不會去自己組裝引用格式。
-**Evidence**: 截圖對比顯示 North Pacific dataset 有 Citation 區塊（含 DOI 連結），但 PGS biota dataset 截圖中無此區塊。兩者位置和格式也不相同。
-**Root cause**: Citation 可能是 provider 自行提供的選填欄位，而非平台強制要求的結構化資料。
+**UI Element**: Dataset detail page — Citation block
+**User Impact**: The citation block is present on some datasets (e.g., the North Pacific whale distribution dataset) but completely absent on others. Format and placement are also inconsistent — users cannot predict where to find citation information and must search for it each time. For Amara and Sofia, the absence of a citation is equivalent to the dataset being unusable — they will not manually assemble a citation format themselves.
+**Evidence**: Screenshot comparison shows the North Pacific dataset has a Citation block (with a DOI link), but the PGS biota dataset screenshot has none. The two instances also differ in placement and format.
+**Root cause**: Citation is likely an optional field supplied by the provider, rather than a structured field the platform enforces.
 **Severity**: High
 
 ---
 
-### PP-14: 地圖顯示航線而非覆蓋範圍
+### PP-14: Map displays vessel tracklines instead of coverage extent
 
 **Persona**: Lena (Researcher), Amara (Policy)
-**UI Element**: Dataset detail page — 右側 Mapbox 地圖
-**User Impact**: North Pacific whale distribution dataset 的地圖顯示一條從亞洲到美洲的船舶航線，而非資料實際覆蓋的地理範圍。使用者無法從地圖判斷「這份資料覆蓋了北太平洋的哪個具體區域」。Lena 需要確認資料是否涵蓋她的研究區域（如特定緯度範圍），但地圖無法提供這個答案。這個問題比地圖「在折疊下方」更根本——即使地圖可見，它呈現的也是錯誤的資訊。
-**Evidence**: 截圖顯示 Mapbox 地圖上有一條細線從東亞延伸到南美洲，這是船舶航跡而非 bbox 覆蓋範圍。
-**Root cause**: 地圖可能直接渲染原始 geometry 資料（點位或航跡），而非從 STAC extent.spatial.bbox 計算並視覺化覆蓋範圍。
-**Severity**: Critical — 顯示錯誤資訊比不顯示更危險
+**UI Element**: Dataset detail page — right-column Mapbox map
+**User Impact**: The North Pacific whale distribution dataset map shows a vessel route running from Asia to the Americas rather than the actual geographic coverage of the data. Users cannot determine from the map "which specific part of the North Pacific does this data cover?" Lena needs to confirm whether the data includes her study region (e.g., a specific latitude range), but the map cannot answer that question. This problem is more fundamental than the map being "below the fold" — even when the map is visible, it is displaying the wrong information.
+**Evidence**: The screenshot shows a thin line on the Mapbox map extending from East Asia to South America. This is a vessel trackline, not a bbox coverage extent.
+**Root cause**: The map likely renders raw geometry data (point locations or tracklines) directly, rather than computing and visualizing coverage from the STAC extent.spatial.bbox field.
+**Severity**: Critical — displaying incorrect information is more dangerous than displaying no information
 
 ---
 
-### PP-15: 技術縮寫欄位名稱無人類語言說明
+### PP-15: Technical field name abbreviations have no plain-language descriptions
 
 **Persona**: Amara (Policy), Sofia (ESG)
-**UI Element**: Dataset detail page — Tabular data 欄位預覽
-**User Impact**: North Pacific dataset 的欄位名稱包含 `sst_sd`、`bathy`、`sla`、`bathy_sd`、`PPupper200m`。這些科學縮寫對非海洋學背景的用戶完全不透明。即使是 Lena，如果不在這個專業子領域，也需要查詢才知道 `sla` 是 sea level anomaly。Amara 和 Sofia 看到這個表格會直接放棄這份資料，即使它實際上完全符合她們的需求。
-**Evidence**: 截圖顯示欄位名稱 `geometry`、`longitude`、`sst_sd`、`bathy`、`sla`、`bathy_sd`、`PPupper200m`、`sst`，無任何說明文字。
-**Root cause**: 欄位名稱直接來自原始資料 schema，平台沒有提供 provider 補充人類可讀說明的機制，也沒有從標準詞彙表（如 CF Conventions）自動對應欄位描述的功能。
+**UI Element**: Dataset detail page — Tabular data field preview
+**User Impact**: The North Pacific dataset's field names include `sst_sd`, `bathy`, `sla`, `bathy_sd`, and `PPupper200m`. These scientific abbreviations are completely opaque to users without an oceanography background. Even Lena, if she is outside this specific sub-discipline, would need to look up that `sla` means sea level anomaly. Amara and Sofia will abandon the dataset immediately upon seeing this table, even if it fully meets their needs.
+**Evidence**: The screenshot shows field names `geometry`, `longitude`, `sst_sd`, `bathy`, `sla`, `bathy_sd`, `PPupper200m`, and `sst` with no explanatory text alongside them.
+**Root cause**: Field names come directly from the raw data schema. The platform provides no mechanism for providers to add human-readable descriptions, and no feature to automatically map fields to descriptions from standard vocabularies (such as CF Conventions).
 **Severity**: High
+
+---
+
+---
+
+### PP-17: Access methods hidden inside accordion
+
+**Persona**: Marcus, Lena
+**Severity**: High
+**Context**: Hub Ocean's "Use Dataset" section defaults to collapsed. Users must actively expand it to see API endpoints and SDK information.
+**Impact**: The most important action on the detail page — accessing the data — is hidden behind an interaction that requires users to know it exists. Users who don't expand the accordion may conclude the platform lacks API access entirely.
+**Evidence**: The Aker BP use case positions API access as a core value proposition: "explore and combine with other datasets." Hiding the access entry point directly undermines this value claim.
+
+---
+
+### PP-18: No SDG tags on dataset pages
+
+**Persona**: Amara
+**Severity**: High
+**Context**: Multiple use cases explicitly reference SDG 14 (Life Below Water) as the motivation and framework for data sharing. The dataset detail page has no SDG-related tags or links.
+**Impact**: Amara cannot filter or identify datasets that support specific SDG targets. She must read full dataset descriptions and infer SDG relevance manually — a high-friction process incompatible with policy workflow timelines.
+**Evidence**: TGS, ILIAD, and Wallenius Wilhelmsen TNFD report all cite SDG 14 alignment. None of this is surfaced on the current detail page.
+
+---
+
+### PP-19: Provider credibility information insufficient
+
+**Persona**: Marcus, Amara
+**Severity**: Medium
+**Context**: Provider names like Aker BP, TGS, and GEBCO are themselves trust signals. However, the detail page displays only a plain text name with no background information, website link, or contact details.
+**Impact**: Users cannot quickly assess the authority or credibility of a data source. Marcus needs this to justify data integration decisions internally. Amara needs institutional context to cite the source appropriately in policy documents.
+**Evidence**: The Aker BP press release and TGS use case both rely on institutional reputation as a credibility signal. The platform does not surface this signal.
+
+---
+
+### PP-20: No cross-dataset discovery path
+
+**Persona**: Lena, Marcus
+**Severity**: High
+**Context**: The Aker BP CEO states: "The real value comes from combining datasets." TGS combines marine biota with oceanographic data. ILIAD's core value proposition is data fusion. Yet the detail page offers no "related datasets" or "common combinations" entry point.
+**Impact**: After finding one dataset, users have no path to discover complementary data. This breaks the discovery flow at the moment of highest intent — when a user has already identified a relevant dataset and is most likely to want more.
+**Evidence**: All four major use cases (TGS, Aker BioMarine, Aker BP, ILIAD) describe multi-dataset workflows as the primary mode of value creation.
+
+---
+
+### PP-21: No distinction between free tier and premium tier
+
+**Personas:** Sofia, Marcus 2A
+**Severity:** High
+
+**Context:**
+ODP hosts both publicly available free datasets and paid premium data products (e.g. Ocean Sensitive Areas). The current catalog does not clearly indicate which datasets are premium.
+
+**User impact:**
+Users do not know that some data requires payment, or incorrectly assume all datasets are free. Sofia may invest time exploring a dataset only to discover it is gated.
+
+**Evidence:**
+Ocean Sensitive Areas is explicitly a premium tier product, but its presentation in the catalog is indistinguishable from free datasets.
+
+**Root cause:**
+License field and keywords are not surfaced as a tier indicator in the catalog UI.
+
+---
+
+### PP-22: No TNFD / CSRD regulatory tags or filters
+
+**Persona:** Sofia
+**Severity:** High
+
+**Context:**
+Financial institutions and industry companies need data that supports TNFD and CSRD compliance. The catalog has no regulatory framework labels or filters.
+
+**User impact:**
+Sofia cannot quickly find "TNFD-aligned ocean sensitive area data". She must open each dataset individually to determine relevance, which is not scalable for an ESG reporting workflow.
+
+**Root cause:**
+STAC metadata does not natively include regulatory compliance tags; no mapping from existing keywords to compliance frameworks has been implemented.
+
+---
+
+### PP-23: No data contribution pathway in the catalog
+
+**Persona:** Erik
+**Severity:** Medium
+
+**Context:**
+Erik wants to contribute company-collected data, but the catalog only presents existing datasets. There is no clear "How to share your data" entry point visible to contributors.
+
+**User impact:**
+Potential data contributors cannot find the contribution path. The platform misses an opportunity to grow its dataset collection through industry partnerships.
+
+**Root cause:**
+The catalog is designed around consumption, not contribution. Contributor onboarding exists elsewhere on hubocean.earth but is not linked from the catalog.
 
 ---
 
 ## Cross-Cutting Insight
 
-All 15 pain points trace back to a single root cause:
+All 22 pain points trace back to a single root cause:
 
 > **The current ODP UI is designed for users who already know what they're looking for and understand the domain vocabulary. It does not serve users who are evaluating fitness-for-purpose.**
 
@@ -184,4 +277,4 @@ This is the design thesis the redesign must address. The solution is not to remo
 
 This principle maps directly to Hub Ocean's JD requirement: *"reduce complexity in data-heavy workflows through clear interface design."*
 
-**2026-04-03 更新**：實際測試 ODP 平台後發現三個額外問題（PP-13、PP-14、PP-15）。PP-14 特別值得注意——地圖顯示錯誤資訊（航線而非覆蓋範圍）比不顯示資訊更危險，因為它可能導致使用者做出錯誤的資料適用性判斷。這強化了我們在 SpatialThumbnail 和 OceanMap 元件設計中使用 STAC bbox 而非原始 geometry 的決策（參見 design-decisions.md DD-02）。
+**2026-04-03 update**: Live testing of the ODP platform revealed three additional issues (PP-13, PP-14, PP-15). **2026-04-05 update**: Three further pain points added (PP-21, PP-22, PP-23) following the addition of Persona 4 (Sofia Chen) and Persona 2B (Erik Hansen) to the user research. PP-14 is particularly significant — a map displaying incorrect information (a trackline instead of coverage extent) is more dangerous than displaying no information, because it can cause users to make incorrect judgments about dataset applicability. This reinforces the decision to use the STAC bbox rather than raw geometry in the SpatialThumbnail and OceanMap component designs (see design-decisions.md DD-02).
