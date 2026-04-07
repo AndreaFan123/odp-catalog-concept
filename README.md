@@ -2,7 +2,7 @@
 
 A concept redesign of the Hub Ocean Ocean Data Platform catalog experience, built as a portfolio project for the Hub Ocean Frontend Engineer role.
 
-**Live demo**: [Vercel URL — coming soon]
+**Live demo**: [Website](https://hub-ocean-odp-concept.netlify.app/)
 **Built by**: Andrea Fan
 
 ---
