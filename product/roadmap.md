@@ -11,8 +11,11 @@
 
 What is actually built in this project. Scoped to demonstrate the core design thesis: *leading with decision-critical information reduces friction for all three personas.*
 
-### Phase 1 — Foundation (Week 1)
+### Phase 1 — Foundation ✅ Complete
+
 **Goal**: Working project scaffold + design system in place before any feature work.
+
+Completed: tokens.css, globals.css, cn.ts, stac.ts, format.ts, router.ts, App.tsx
 
 | Task | Output | Priority |
 |---|---|---|
@@ -23,8 +26,11 @@ What is actually built in this project. Scoped to demonstrate the core design th
 | Format utilities | `src/lib/format.ts` | Must |
 | Font loading (DM Serif Display, DM Sans, IBM Plex Mono) | `index.html` | Must |
 
-### Phase 2 — Catalog Page (Week 1–2)
+### Phase 2 — Catalog Page ✅ Complete
+
 **Goal**: A researcher can scan the catalog and assess spatial/temporal fit without clicking into a dataset.
+
+Completed: AppShell, CollectionCard, CollectionGrid, sidebar, search, filter, dark mode
 
 | Task | ICE | Pain Point | Output |
 |---|---|---|---|
@@ -37,8 +43,11 @@ What is actually built in this project. Scoped to demonstrate the core design th
 | Keyword filter (URL-based) | 7 (3×3×1) | PP-08 | State in `CatalogPage` |
 | Error + empty states | 5 (2×3×1) | — | Inline in `CatalogPage` |
 
-### Phase 3 — Dataset Detail Page (Week 2–3)
+### Phase 3 — Dataset Detail Page ✅ Complete
+
 **Goal**: A user who clicks a dataset can answer all fitness-for-purpose questions without scrolling. Access methods are immediately visible. Related datasets extend the discovery flow.
+
+Completed: DetailPage.tsx (collection), DatasetDetailPage.tsx (dataset), mockCollectionData.ts (Aker BioMarine, 25 datasets), mockDatasetData.ts (3 datasets), Code Examples modal, Collection → Dataset hierarchy
 
 **Layout**: Two-column on desktop, single column on mobile (DD-17).
 
@@ -91,127 +100,19 @@ What is actually built in this project. Scoped to demonstrate the core design th
 
 **Design decisions applied**: DD-14, DD-17, DD-18, DD-19, DD-20, DD-21, DD-22, DD-23, DD-24
 
-### Phase 4 — Polish (Week 3)
-**Goal**: The project looks and feels deliberate, not assembled.
+### Phase 4 — Homepage ✅ Complete
 
-| Task | Output |
-|---|---|
-| Entrance animations (staggered card reveal) | CSS motion tokens |
-| Hover micro-interactions on cards | Tailwind transitions |
-| Responsive layout (mobile catalog card stacking) | Tailwind breakpoints |
-| `Navbar` + `Footer` with concept disclaimer | `components/layout/` |
-| `NotFoundPage` | `pages/NotFoundPage.tsx` |
-| A11y review pass (all components) | `a11y-reviewer` sign-off |
-| README completion | `docs-manager` |
+**Goal**: Create a landing experience that communicates ODP's value in 30 seconds, provides persona-specific entry points, and delivers the emotional brand promise.
 
-### Phase 5 — Spotify UX (Week 4)
-**Goal**: Elevate the catalog experience from "database list" to "data experience platform" — embodying Hub Ocean's own positioning as "the Spotify of ocean data."
+Completed: HomePage.tsx, SciencePage, IndustryPage, GovernancePage, CitizenPage, SolutionLayout
 
-| Task | Status | Output | Priority |
-|---|---|---|---|
-| Light mode first (DD-15) | ✅ Done | `styles/tokens.css` | Must |
-| Sidebar layout (DD-10) | ✅ Done | `components/layout/AppShell.tsx` | Must |
-| Card removes map thumbnail, uses region badge (DD-13) | ✅ Done | `components/catalog/DatasetCard.tsx` | Must |
-| Focus state unified (WCAG 2.4.11 Non-text Contrast AA) | ✅ Done | `styles/globals.css`, `styles/tokens.css` | Must |
-| Sidebar collapse icon redesign (panel icon) | ✅ Done | `components/layout/AppShell.tsx` | Should |
-| Sidebar light mode redesign (light background + theme-aware logo) | ✅ Done | `components/layout/AppShell.tsx`, `assets/ODP-Logo-Light.svg` | Should |
-| Loading animation inline (within grid area, not full-screen overlay) | ✅ Done | `components/catalog/LoadingScreen.tsx` | Should |
-| Detail page flat map (DD-14) | Pending | `components/catalog/OceanMap.tsx` | Must |
-| Dark mode toggle | Pending | `AppShell` header button | Should |
-| Playbar UI (static) | Pending | `components/player/Playbar.tsx` | Should |
-| Waveform animation (time-series data) | Pending | `components/player/WaveAnimation.tsx` | Should |
-| Geographic point animation (spatial data) | Pending | `components/player/MapAnimation.tsx` | Should |
-| Onboarding survey modal | Pending | `components/onboarding/OnboardingModal.tsx` | Should |
-| localStorage preference persistence | Pending | `src/lib/preferences.ts` | Should |
+### Phase 5 — Playbar ⏭ Skipped
 
-### Phase 6 — Homepage (Week 4–5)
-**Goal**: Create a landing experience that communicates ODP's value in 30 seconds, provides persona-specific entry points, and delivers the emotional brand promise of "the Spotify of ocean data."
+Out of portfolio scope.
 
-**Design principles** (DD-28, DD-27):
-- Task-oriented, not feature-oriented (DD-28)
-- Persona routing is the core function (DD-27)
-- Restraint: 5 sections, not 15
+### Phase 6 — Deployment 🔄 In Progress
 
-**Layout**: Full-width, no sidebar. Dedicated `Navbar` component (transparent → `#200A3A` on scroll).
-
-#### Five-section spec
-
-**Section 1 — Hero**
-
-| Component | Description | Priority |
-|---|---|---|
-| `HeroSection` | Full-width world map animation with data-point light pulses. Headline: "The world's ocean data, made usable." Single CTA: [Browse the Catalog →] | Must |
-
-**Section 2 — Numbers** (DD-25)
-
-| Number | Label |
-|---|---|
-| 3% | Of ocean biodiversity data comes from industry |
-| 38 | Public datasets and growing |
-| 0 | Login required |
-
-Component: `StatCounter` with count-up animation on scroll entry.
-
-**Section 3 — Browse by category**
-
-| Component | Description | Priority |
-|---|---|---|
-| `CategoryGrid` | 6 category cards. Dataset count per category calculated dynamically from STAC API. Click navigates to `/catalog?category={id}`. | Must |
-
-**Section 4 — Who uses ODP** (DD-26, DD-27)
-
-| Persona card | Destination |
-|---|---|
-| Researchers | `/catalog?category=biodiversity` |
-| Industry (user) | `/catalog?category=industry` |
-| ESG & Finance | `/catalog?category=mpa` |
-| Data Contributors | `https://app.hubocean.earth` (external) |
-
-Component: `PersonaCards`. Four cards including Sofia. Each links directly to its corresponding entry point.
-
-**Section 5 — Footer**
-
-| Component | Description | Priority |
-|---|---|---|
-| `HomeFooter` | Minimal. Label: "Concept redesign · Not an official product". API attribution, GitHub + Hub Ocean links. | Must |
-
-#### Animation requirements
-
-| Animation | Trigger | Duration | Notes |
-|---|---|---|---|
-| Hero dot pulse | CSS `@keyframes`, always on | 2–4s per dot, random phase | Breathing effect — opacity + scale + box-shadow |
-| Section entrance | `IntersectionObserver` (threshold 0.15) | 0.5s ease-out-expo | `opacity: 0→1`, `translateY: 20px→0`, child stagger 0.1s |
-| Count-up (stats) | `IntersectionObserver`, fires once | 1.5s ease-out-cubic | `rAF` loop, `Math.floor` interpolation |
-| Navbar transition | `scroll` event (≥60px) | 0.3s ease | `transparent` → `#200A3A` |
-| Card hover | CSS `:hover` | 0.15s ease | `translateY(-4px)` + shadow |
-| CTA hover | CSS `:hover` | 0.15s ease | `scale(1.02)` + cyan glow |
-| prefers-reduced-motion | CSS media query | 0.01ms all durations | Final states shown immediately |
-
-#### Router changes
-
-| Before | After |
-|---|---|
-| `/` → `CatalogPage` (AppShell) | `/` → `HomePage` (no AppShell) |
-| — | `/catalog` → `CatalogPage` (AppShell) |
-
-#### New files
-
-| File | Description |
-|---|---|
-| `src/pages/HomePage.tsx` | Page component, orchestrates all home sections |
-| `src/components/home/HeroSection.tsx` | World map bg + dots + headline + CTA |
-| `src/components/home/StatCounter.tsx` | Count-up stats (3% / 38 / 0) |
-| `src/components/home/CategoryGrid.tsx` | 6 category cards with live counts |
-| `src/components/home/PersonaCards.tsx` | 4 persona entry-point cards |
-| `src/components/layout/HomeNavbar.tsx` | Transparent-to-dark fixed navbar |
-
-#### Design decisions applied
-
-DD-10 (Spotify UX pattern), DD-15 (light mode first), DD-19 (SDG tags — referenced in persona card copy), DD-25 (3% Problem narrative — Numbers section), DD-26 (four persona cards — ESG & Finance added), DD-27 (persona routing as primary navigation), DD-28 (homepage is task-oriented, not feature-oriented)
-
-#### Wireframe reference
-
-`design/wireframes/home-page.md`
+Vercel deployment pending, README pending.
 
 ---
 

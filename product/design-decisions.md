@@ -554,6 +554,46 @@ Restraint is a signal of design quality. 15 sections dilute the weight of every 
 
 ---
 
+## DD-29: Sector Pages as Marketing Landing Pages (No Sidebar)
+
+**Context**: Hub Ocean's Sectors (Science & Research, Industries & Finance, Governance, Citizen Sea) have no dedicated landing pages on the current platform — identified as a core IA gap in research/ia-analysis.md.
+
+**Decision**: Build four Sector landing pages (`/solutions/*`) styled as marketing pages (dark, full-width, no sidebar). Persona routing cards navigate to the relevant Sector page first; the Sector page then links to `/catalog`.
+
+**Rationale**: Resolves Hub Ocean's most fundamental IA problem: no clear audience entry point. Users arrive at the platform, understand its relevance to them, then explore the catalog with intent.
+
+**Trade-offs**: Adds one navigation layer (Home → Sector → Catalog). The extra step provides context — users enter the catalog with a clear purpose rather than facing 38 unlabelled collections.
+
+---
+
+## DD-30: Numbers Section Removed
+
+**Decision**: Removed the "3% / 38 / 0" statistics section from the homepage.
+
+**Rationale**: The three numbers told three unrelated stories:
+- 3%: Industry problem framing (marketing narrative)
+- 38: Platform inventory (utility information)
+- 0: Barrier to entry (reassurance)
+
+Combined, they produced no single clear message. Removing the section makes the page more focused; the Hero subtitle already handles the "open and accessible" message ("38 public collections. Open, FAIR, and ready to explore.").
+
+**Trade-offs**: Loses an explicit "why this platform exists" moment. Accepted — the Hero subtitle covers this adequately without the visual noise.
+
+---
+
+## DD-31: Honest AI-Assisted Development Disclosure
+
+**Decision**: Explicitly state in the README and footer that this portfolio used AI-assisted development (Claude Code + Claude.ai).
+
+**Rationale**:
+- Honesty: Hiring teams know AI tooling exists; concealing it erodes trust
+- Demonstrates judgement: Design decisions, product analysis, and API limitation handling are done manually
+- Distinguishes capability: Using AI to produce deep product analysis is different from using AI to generate UI screenshots
+
+**Trade-offs**: Risk of undervaluing technical skill. Mitigated by README clearly separating what AI assisted with versus what was done manually.
+
+---
+
 ## Decisions Deferred to Production Scope
 
 The following decisions are explicitly out of scope for this portfolio project:

@@ -22,6 +22,62 @@ import { getMockDataset } from '../lib/mockDatasetData'
 import type { MockDataset } from '../lib/mockDatasetData'
 import { useWindowWidth, BP_TABLET, BP_DESKTOP } from '../lib/useWindowWidth'
 
+// ─── Theme toggle ─────────────────────────────────────────────────────────────
+
+function IconMoon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+    </svg>
+  )
+}
+
+function IconSun() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+      <circle cx="12" cy="12" r="5"/>
+      <line x1="12" y1="1" x2="12" y2="3"/>
+      <line x1="12" y1="21" x2="12" y2="23"/>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+      <line x1="1" y1="12" x2="3" y2="12"/>
+      <line x1="21" y1="12" x2="23" y2="12"/>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+    </svg>
+  )
+}
+
+function ThemeToggle({ theme, onToggle }: { theme: 'light' | 'dark'; onToggle: () => void }) {
+  const [hovered, setHovered] = useState(false)
+  return (
+    <button
+      type="button"
+      className="round-button"
+      aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+      onClick={onToggle}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        width: 36,
+        height: 36,
+        borderRadius: '50%',
+        background: 'var(--color-surface)',
+        border: `1px solid ${hovered ? 'var(--color-accent)' : 'var(--color-border)'}`,
+        cursor: 'pointer',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: hovered ? 'var(--color-text-primary)' : 'var(--color-text-secondary)',
+        transition: 'border-color 0.15s, color 0.15s',
+        flexShrink: 0,
+      }}
+    >
+      {theme === 'dark' ? <IconSun /> : <IconMoon />}
+    </button>
+  )
+}
+
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function formatBytes(bytes: number): string {
@@ -732,26 +788,7 @@ export function DatasetDetailPage() {
         }}
       >
         {/* Theme toggle */}
-        <button
-          type="button"
-          onClick={handleThemeToggle}
-          aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
-          style={{
-            width: 32,
-            height: 32,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            background: 'none',
-            border: 'none',
-            borderRadius: 6,
-            cursor: 'pointer',
-            color: 'var(--color-text-secondary)',
-            fontSize: 16,
-          }}
-        >
-          {theme === 'dark' ? '☀︎' : '☽'}
-        </button>
+        <ThemeToggle theme={theme} onToggle={handleThemeToggle} />
         <UserMenu onCategoryChange={() => {}} />
       </div>
 

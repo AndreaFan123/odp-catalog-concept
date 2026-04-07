@@ -1,5 +1,39 @@
 # Design System Changelog
 
+## [2026-04-07] — Homepage + Sector Pages Complete
+
+### Pages Added
+
+**HomePage (`/`)** — dark full-width, no sidebar
+- Hero with video background (wave.mp4) + multi-layer overlay
+- Browse by category (dynamic STAC collection counts)
+- Persona routing (4 cards → /solutions/*)
+- Science Collaborators marquee (animated text ticker)
+- Footer with Hub Ocean logo
+- Removed: Numbers section (3% / 38 / 0 — inconsistent logic)
+- Removed: The Problem section
+
+**Sector landing pages** — dark full-width, no sidebar, shared SolutionLayout:
+- SciencePage (`/solutions/science`) — Hero + 3 Feature cards + Quote + Partners marquee
+- IndustryPage (`/solutions/industry`) — Hero + 3 Feature cards + Quote
+- GovernancePage (`/solutions/governance`) — Hero + 3 Feature cards + Quote
+- CitizenPage (`/solutions/citizen`) — Hero + 3 Feature cards + Quote
+
+### Architecture
+
+- `noShellRoutes`: `/` + `/solutions/*` → no sidebar, dark full-width
+- AppShell routes: `/catalog` + `/collections/*` + `/datasets/*` → sidebar, light/dark mode
+
+### Design Decisions
+
+- Persona cards navigate to `/solutions/*` sector pages (not directly to /catalog)
+- Sector pages styled as marketing landing pages (resolves Hub Ocean IA gap: no sector entry points)
+- Numbers section removed (3 stats told 3 unrelated stories — no single clear message)
+- DatasetDetailPage theme toggle unified to SVG icon (consistent with CatalogPage)
+- Logo split: Hub Ocean logo (marketing pages) / ODP logo (platform pages)
+
+---
+
 All significant design system decisions are recorded here. Format follows [Keep a Changelog](https://keepachangelog.com/).
 
 ---
