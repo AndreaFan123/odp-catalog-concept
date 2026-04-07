@@ -32,6 +32,72 @@ export function getSavedIds(): string[] {
   }
 }
 
+function toggleSaved(id: string): boolean {
+  const ids = getSavedIds()
+  const next = ids.includes(id) ? ids.filter((x) => x !== id) : [...ids, id]
+  try { localStorage.setItem(SAVED_KEY, JSON.stringify(next)) } catch { /* ignore */ }
+  return next.includes(id)
+}
+
+// ─── SaveButton ────────────────────────────────────────────────────────────────
+
+function IconHeart({ filled }: { filled: boolean }) {
+  return (
+    <svg width={14} height={14} viewBox="0 0 24 24" fill={filled ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+    </svg>
+  )
+}
+
+function SaveButton({ collectionId, cardHovered }: { collectionId: string; cardHovered: boolean }) {
+  const [saved, setSaved] = useState(() => getSavedIds().includes(collectionId))
+  const [btnHovered, setBtnHovered] = useState(false)
+
+  const handleClick = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    const next = toggleSaved(collectionId)
+    setSaved(next)
+  }
+
+  const visible = saved || cardHovered
+
+  return (
+    <button
+      type="button"
+      className="save-button"
+      aria-label={saved ? 'Remove from saved' : 'Save collection'}
+      aria-pressed={saved}
+      onClick={handleClick}
+      onMouseEnter={() => setBtnHovered(true)}
+      onMouseLeave={() => setBtnHovered(false)}
+      style={{
+        position: 'absolute',
+        top: 10,
+        right: 10,
+        width: 28,
+        height: 28,
+        borderRadius: '50%',
+        border: '1px solid var(--color-border)',
+        background: saved
+          ? 'var(--color-accent)'
+          : btnHovered
+          ? 'var(--color-surface-elevated)'
+          : 'var(--color-surface)',
+        color: saved ? 'var(--color-accent-text)' : 'var(--color-text-secondary)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        cursor: 'pointer',
+        opacity: visible ? 1 : 0,
+        transition: 'opacity 0.15s, background 0.15s, color 0.15s',
+        flexShrink: 0,
+      }}
+    >
+      <IconHeart filled={saved} />
+    </button>
+  )
+}
+
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function getProviderName(collection: STACCollection): string | null {
@@ -99,6 +165,7 @@ export function CollectionCard({ collection, onKeywordClick }: CollectionCardPro
       role="article"
       style={{
         height: 200,
+        position: 'relative',
         backgroundColor: hovered ? 'var(--color-surface-elevated)' : 'var(--color-surface)',
         border: `1px solid ${hovered ? 'var(--color-sidebar-accent)' : 'var(--color-border)'}`,
         borderRadius: 8,
@@ -112,6 +179,8 @@ export function CollectionCard({ collection, onKeywordClick }: CollectionCardPro
         transition: 'transform 0.15s ease, border-color 0.15s ease, background-color 0.15s',
       }}
     >
+      <SaveButton collectionId={collection.id} cardHovered={hovered} />
+
       {/* Row 1: badges */}
       <div style={{ display: 'flex', gap: 6, alignItems: 'center', flexShrink: 0 }}>
         <span
